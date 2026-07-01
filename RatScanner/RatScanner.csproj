@@ -12,10 +12,10 @@
 		<Product>ShuShuscanner</Product>
 		<Company>ShuShuscanner</Company>
 		<Description>ShuShuscanner item scanner</Description>
-		<Version>1.0.0</Version>
-		<AssemblyVersion>1.0.0</AssemblyVersion>
-		<FileVersion>1.0.0</FileVersion>
-		<InformationalVersion>1.0.0</InformationalVersion>
+		<Version>1.0.1</Version>
+		<AssemblyVersion>1.0.1</AssemblyVersion>
+		<FileVersion>1.0.1</FileVersion>
+		<InformationalVersion>1.0.1</InformationalVersion>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<AddRazorSupportForMvc>true</AddRazorSupportForMvc>
 		<RootNamespace>ShuShuscanner</RootNamespace>

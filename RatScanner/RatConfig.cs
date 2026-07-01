@@ -383,9 +383,7 @@ internal static class RatConfig {
 			int height = Screen.PrimaryScreen.Bounds.Height;
 			double scale = GetScalingForScreen(Screen.PrimaryScreen);
 
-			string message = $"Detected {width}x{height} Resolution at {scale} Scale.\n\n";
-			message += "You can adjust this inside the settings.";
-			Logger.ShowMessage(message);
+			Logger.LogInfo($"Detected fallback screen config: {width}x{height} at {scale} scale.");
 
 			return (width, height, scale);
 		}
