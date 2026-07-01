@@ -23,7 +23,6 @@ Battlestate Games is not affiliated with this project. Use this fork at your own
 - Renamed the application to ShuShuscanner
 - Chinese UI localization, with Chinese brand name “鼠鼠小账本”
 - Removed calls to the original RatScanner API backend
-- Removed original update, FAQ, Patreon, Discord, and download integrations
 - Updated logo and application icon
 - Adjusted settings layout and scan status display
 - Added separate configurable scan hotkeys
