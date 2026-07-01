@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace RatScanner
+namespace ShuShuscanner
 {
     public class InteractiveMapData
 	{

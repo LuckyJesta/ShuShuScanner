@@ -21,6 +21,7 @@
   "ScanningSettingsTitle": "Ustawienia skanowania",
   "NameScanLanguage": "Język skanowania nazw",
   "EnableNameScan": "Włącz skanowanie nazw",
+  "NameScanHotkey": "Name Scan Hotkey",
   "AutomaticScanning": "Automatyczne skanowanie",
   "EnableIconScan": "Włącz skanowanie ikon",
   "ScanRotatedIcons": "Skanuj obrócone ikony",

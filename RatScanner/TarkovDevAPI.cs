@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using RatScanner.TarkovDev.GraphQL;
+using ShuShuscanner.TarkovDev.GraphQL;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -11,9 +11,9 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
-using TTask = RatScanner.TarkovDev.GraphQL.Task;
+using TTask = ShuShuscanner.TarkovDev.GraphQL.Task;
 
-namespace RatScanner;
+namespace ShuShuscanner;
 
 public static class TarkovDevAPI {
 	private class ResponseData<T> {
@@ -63,8 +63,7 @@ public static class TarkovDevAPI {
 				ResponseData<T[]>? neededResponse = JsonConvert.DeserializeObject<ResponseData<T[]>?>(cachedResponse, JsonSettings);
 				if (neededResponse?.Data?.Data != null) {
 					long time = DateTimeOffset.Now.ToUnixTimeSeconds();
-					// Use expired TTL so background refresh will be triggered
-					Cache[baseQueryKey] = (time - 1, neededResponse.Data.Data);
+					Cache[baseQueryKey] = (time + ttl, neededResponse.Data.Data);
 					Logger.LogInfo($"Loaded {neededResponse.Data.Data.Length} items from offline cache for: \"{baseQueryKey}\"");
 					return true;
 				}
@@ -185,9 +184,17 @@ public static class TarkovDevAPI {
 
 	private static T[] GetCachedPaginated<T>(string baseQueryKey, Func<int, int, string> queryBuilder, long ttl, bool isRetry = false) where T : class {
 		if (!Cache.TryGetValue(baseQueryKey, out (long expire, object response) value)) {
-			if (isRetry) throw new Exception("Retrying to fetch paginated query response failed.");
+			if (isRetry) {
+				Logger.LogWarning($"Paginated query still unavailable after refresh attempt: \"{baseQueryKey}\"");
+				return Array.Empty<T>();
+			}
 
 			Logger.LogInfo($"Paginated query not found in cache: \"{baseQueryKey}\"");
+			if (PendingRequests.ContainsKey(baseQueryKey)) {
+				Logger.LogInfo($"Paginated query is currently being refreshed: \"{baseQueryKey}\"");
+				return Array.Empty<T>();
+			}
+
 			Task.Run(() => QueuePaginatedRequest<T>(baseQueryKey, queryBuilder, ttl)).Wait();
 			return GetCachedPaginated<T>(baseQueryKey, queryBuilder, ttl, true);
 		}
@@ -267,11 +274,11 @@ public static class TarkovDevAPI {
 		.WithSellFor(new ItemPriceQueryBuilder().WithAllScalarFields()
 			.WithVendor(new VendorQueryBuilder().WithAllScalarFields()
 				.WithTraderOfferFragment(new TraderOfferQueryBuilder().WithAllScalarFields()
-					.WithTrader(new TraderQueryBuilder().WithId()))))
+					.WithTrader(new TraderQueryBuilder().WithAllScalarFields()))))
 		.WithBuyFor(new ItemPriceQueryBuilder().WithAllScalarFields()
 			.WithVendor(new VendorQueryBuilder().WithAllScalarFields()
 				.WithTraderOfferFragment(new TraderOfferQueryBuilder().WithAllScalarFields()
-					.WithTrader(new TraderQueryBuilder().WithId()))))
+					.WithTrader(new TraderQueryBuilder().WithAllScalarFields()))))
 		.WithCategory(new ItemCategoryQueryBuilder().WithAllScalarFields())
 		.WithCategories(new ItemCategoryQueryBuilder().WithAllScalarFields())
 		.WithUsedInTasks(new TaskQueryBuilder().WithId())

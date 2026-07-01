@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using Icon = RatEye.Processing.Icon;
 
-namespace RatScanner.Scan;
+namespace ShuShuscanner.Scan;
 
 public class ItemIconScan : ItemScan {
 	public bool Rotated;

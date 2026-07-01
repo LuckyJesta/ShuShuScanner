@@ -1,4 +1,4 @@
-﻿namespace RatScanner;
+﻿namespace ShuShuscanner;
 
 public interface ISwitchable {
 	public static ISwitchable? Instance { get; }

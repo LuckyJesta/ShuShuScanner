@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace RatScanner.View;
+namespace ShuShuscanner.View;
 
 [ValueConversion(typeof(int), typeof(string))]
 public class IntToLongPriceConverter : IValueConverter {

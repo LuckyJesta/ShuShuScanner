@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
 
-namespace RatScanner;
+namespace ShuShuscanner;
 
 internal static class UserActivityHelper {
 	[DllImport("user32.dll")]

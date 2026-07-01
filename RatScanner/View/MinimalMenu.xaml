@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="RatScanner.View.MinimalMenu"
+﻿<UserControl x:Class="ShuShuscanner.View.MinimalMenu"
 						 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 						 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 						 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 						 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-						 xmlns:viewmodel="clr-namespace:RatScanner.ViewModel"
+						 xmlns:viewmodel="clr-namespace:ShuShuscanner.ViewModel"
 						 d:DataContext="{d:DesignInstance Type=viewmodel:MenuVM}"
 						 d:DesignHeight="300"
 						 d:DesignWidth="200"
@@ -18,6 +18,7 @@
 												ShadowDepth="1"
 												Color="#000000" />
 		</StackPanel.Effect>
+		<StackPanel x:Name="ContentPanel">
 		<StackPanel x:Name="NameDisplay" Margin="2"
 								VerticalAlignment="Center"
 								Orientation="Horizontal">
@@ -32,7 +33,7 @@
 			<Grid x:Name="AvgDayPriceDisplay"
 						Margin="0,5,0,0">
 				<Label Grid.Column="0"
-							 Content="Avg. Day Price" />
+							 Content="{Binding AvgDailyPriceLabel}" />
 				<Label Grid.Column="1"
 							 Content="{Binding LastItem.Avg24HPrice, Converter={StaticResource IntToLongPriceConverter}}"
 							 d:Content="88.000 ₽" />
@@ -45,7 +46,7 @@
 
 			<Grid x:Name="PricePerSlotDisplay">
 				<Label Grid.Column="0"
-							 Content="Price per Slot" />
+							 Content="{Binding PricePerSlotLabel}" />
 				<Label Grid.Column="1"
 							 Content="{Binding PricePerSlot, Converter={StaticResource IntToLongPriceConverter}}"
 							 d:Content="11.000 ₽" />
@@ -92,7 +93,7 @@
 				<Grid>
 					<Label Grid.Column="0"
 							 HorizontalAlignment="Left"
-							 Content="Needed for Kappa" />
+							 Content="{Binding KappaNeededLabel}" />
 					<StackPanel Grid.Column="1"
 										Orientation="Horizontal"
 										HorizontalAlignment="Right">
@@ -129,7 +130,7 @@
 				<Grid>
 					<Label Grid.Column="0"
 								 HorizontalAlignment="Left"
-								 Content="Needed Items" />
+								 Content="{Binding NeededQuestHideoutLabel}" />
 					<StackPanel Grid.Column="1"
 											Orientation="Horizontal"
 											HorizontalAlignment="Right">
@@ -251,7 +252,7 @@
 			<Separator />
 			<Grid Margin="0,5,0,0">
 				<Label Grid.Column="0"
-							 Content="Updated"
+							 Content="{Binding UpdatedTimestampLabel}"
 							 FontSize="10" />
 				<Label Grid.Column="1"
 							 Content="{Binding Updated}"
@@ -264,5 +265,29 @@
 				</Grid.ColumnDefinitions>
 			</Grid>
 		</StackPanel>
+		</StackPanel>
+		<TextBlock Width="{Binding ActualWidth, ElementName=ContentPanel}"
+		           Margin="2,2,2,0"
+		           Text="{Binding ScanStatusText}"
+		           FontFamily="Roboto Medium"
+		           FontSize="12"
+		           Foreground="#EEEEEE"
+		           TextWrapping="Wrap"
+		           TextTrimming="CharacterEllipsis"
+		           MaxHeight="32">
+			<TextBlock.Style>
+				<Style TargetType="TextBlock">
+					<Setter Property="Visibility"
+					        Value="Visible" />
+					<Style.Triggers>
+						<DataTrigger Binding="{Binding ScanStatusText}"
+						             Value="">
+							<Setter Property="Visibility"
+							        Value="Collapsed" />
+						</DataTrigger>
+					</Style.Triggers>
+				</Style>
+			</TextBlock.Style>
+		</TextBlock>
 	</StackPanel>
 </UserControl>

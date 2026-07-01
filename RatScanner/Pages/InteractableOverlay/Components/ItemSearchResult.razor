@@ -1,4 +1,4 @@
-@using RatScanner.TarkovDev.GraphQL
+﻿@using ShuShuscanner.TarkovDev.GraphQL
 @using Color = MudBlazor.Color
 @using System.Diagnostics;
 
@@ -30,8 +30,8 @@
                 </MudText>
                 <MudText Align="Align.Center">
                     @Item.ShortName
-                    <MudIconButton Icon="@Constants.Icon.TarkovDev" Size="Size.Small" OnClick=@(() => OpenURL($"https://tarkov.dev/item/{Item.Id}")) />
-                    <MudIconButton Icon="@Icons.Material.Filled.OpenInNew" Size="Size.Small" OnClick=@(() => OpenURL(Item.WikiLink)) />
+                    <MudIconButton Icon="@Constants.Icon.TarkovDev" Size="Size.Small" Title="打开 Tarkov.dev" OnClick=@(() => OpenURL($"https://tarkov.dev/item/{Item.Id}")) />
+                    <MudIconButton Icon="@Icons.Material.Filled.OpenInNew" Size="Size.Small" Title="打开百科" OnClick=@(() => OpenURL(Item.WikiLink)) />
                 </MudText>
             </MudStack>
         </MudStack>

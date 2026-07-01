@@ -1,5 +1,5 @@
 ﻿@page "/app/settings/hotkeys"
-@using RatScanner.Components;
+@using ShuShuscanner.Components;
 @inject SettingsVM SettingsVM
 @inject IJSRuntime JSRuntime
 @inject LocalizationService Localizer
@@ -9,43 +9,25 @@
     <MudGrid Class="pa-0 ma-0" Spacing="0" Style="height: 100%;">
         <MudItem xs="12">
             <MudPaper Class="align-center justify-center pa-2 mx-2 mb-2" Elevation="2">
-                <MudStack Spacing="0" Justify="Justify.SpaceBetween" Row="true">
-                    <MudItem>
-                        <MudText>
-                            @Localizer["OpenWiki"]
-                        </MudText>
-                    </MudItem>
-                    <MudItem>
-                        <HotkeySelector></HotkeySelector>
-                    </MudItem>
+                <MudStack Spacing="1" AlignItems="AlignItems.Stretch">
+                    <MudText>@Localizer["OpenWiki"]</MudText>
+                    <HotkeySelector></HotkeySelector>
                 </MudStack>
             </MudPaper>
         </MudItem>
         <MudItem xs="12">
             <MudPaper Class="align-center justify-center pa-2 mx-2 mb-2" Elevation="2">
-                <MudStack Spacing="0" Justify="Justify.SpaceBetween" Row="true">
-                    <MudItem>
-                        <MudText>
-                            @Localizer["OpenTarkovDev"]
-                        </MudText>
-                    </MudItem>
-                    <MudItem>
-                        <HotkeySelector></HotkeySelector>
-                    </MudItem>
+                <MudStack Spacing="1" AlignItems="AlignItems.Stretch">
+                    <MudText>@Localizer["OpenTarkovDev"]</MudText>
+                    <HotkeySelector></HotkeySelector>
                 </MudStack>
             </MudPaper>
         </MudItem>
         <MudItem xs="12">
             <MudPaper Class="align-center justify-center pa-2 mx-2 mb-2" Elevation="2">
-                <MudStack Spacing="0" Justify="Justify.SpaceBetween" Row="true">
-                    <MudItem>
-                        <MudText>
-                            @Localizer["FavoriteItem"]
-                        </MudText>
-                    </MudItem>
-                    <MudItem>
-                        <HotkeySelector></HotkeySelector>
-                    </MudItem>
+                <MudStack Spacing="1" AlignItems="AlignItems.Stretch">
+                    <MudText>@Localizer["FavoriteItem"]</MudText>
+                    <HotkeySelector></HotkeySelector>
                 </MudStack>
             </MudPaper>
         </MudItem>
@@ -56,29 +38,17 @@
         </MudItem>
         <MudItem xs="12">
             <MudPaper Class="align-center justify-center pa-2 mx-2 mb-2" Elevation="2">
-                <MudStack Spacing="0" Justify="Justify.SpaceBetween" Row="true">
-                    <MudItem>
-                        <MudText>
-                            @Localizer["AddItem"]
-                        </MudText>
-                    </MudItem>
-                    <MudItem>
-                        <HotkeySelector></HotkeySelector>
-                    </MudItem>
+                <MudStack Spacing="1" AlignItems="AlignItems.Stretch">
+                    <MudText>@Localizer["AddItem"]</MudText>
+                    <HotkeySelector></HotkeySelector>
                 </MudStack>
             </MudPaper>
         </MudItem>
         <MudItem xs="12">
             <MudPaper Class="align-center justify-center pa-2 mx-2 mb-2" Elevation="2">
-                <MudStack Spacing="0" Justify="Justify.SpaceBetween" Row="true">
-                    <MudItem>
-                        <MudText>
-                            @Localizer["RemoveItem"]
-                        </MudText>
-                    </MudItem>
-                    <MudItem>
-                        <HotkeySelector></HotkeySelector>
-                    </MudItem>
+                <MudStack Spacing="1" AlignItems="AlignItems.Stretch">
+                    <MudText>@Localizer["RemoveItem"]</MudText>
+                    <HotkeySelector></HotkeySelector>
                 </MudStack>
             </MudPaper>
         </MudItem>

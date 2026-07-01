@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Web.WebView2.Core;
 using MudBlazor.Services;
-using RatScanner.ViewModel;
+using ShuShuscanner.ViewModel;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Navigation;
 
-namespace RatScanner.View;
+namespace ShuShuscanner.View;
 
 /// <summary>
 /// Interaction logic for BlazorUI.xaml
@@ -27,7 +27,7 @@ public partial class BlazorUI : UserControl, ISwitchable {
 		serviceCollection.AddWpfBlazorWebView();
 		serviceCollection.AddMudServices();
 
-		serviceCollection.AddSingleton<MenuVM>(s => new MenuVM(RatScannerMain.Instance));
+		serviceCollection.AddSingleton<MenuVM>(s => new MenuVM(ShuShuscannerMain.Instance));
 
 		LocalizationService localizationService = new();
 		serviceCollection.AddSingleton(localizationService);
@@ -44,7 +44,7 @@ public partial class BlazorUI : UserControl, ISwitchable {
 		}
 		serviceCollection.AddSingleton<VirtualScreenOffset>(s => new VirtualScreenOffset(left, top));
 
-		serviceCollection.AddSingleton<TarkovTrackerDB>(s => RatScannerMain.Instance.TarkovTrackerDB);
+		serviceCollection.AddSingleton<TarkovTrackerDB>(s => ShuShuscannerMain.Instance.TarkovTrackerDB);
 
 		ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
 

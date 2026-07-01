@@ -1,5 +1,5 @@
-@using RatScanner.TarkovDev.GraphQL
-@using TTask = RatScanner.TarkovDev.GraphQL.Task;
+﻿@using ShuShuscanner.TarkovDev.GraphQL
+@using TTask = ShuShuscanner.TarkovDev.GraphQL.Task;
 
 <div class="map-viewer-overlay" @onclick="OnClose">
     <div class="map-viewer-header" @onclick:stopPropagation="true">
@@ -13,11 +13,11 @@
                 </MudStack>
                 <MudText Typo="Typo.caption" Class="mt-1">@Objective.Description</MudText>
             }
-            <MudText Typo="Typo.caption" Class="mt-1">Scroll to zoom � Drag to pan</MudText>
+            <MudText Typo="Typo.caption" Class="mt-1">滚轮缩放，拖动平移</MudText>
         </MudPaper>
     </div>
     <div class="map-viewer-close" @onclick:stopPropagation="true">
-        <MudIconButton Icon="@Icons.Material.Filled.Close" Size="Size.Large" Color="Color.Error" OnClick="OnClose" />
+        <MudIconButton Icon="@Icons.Material.Filled.Close" Size="Size.Large" Color="Color.Error" Title="关闭地图" OnClick="OnClose" />
     </div>
     <div class="map-viewer-container" 
          @onclick:stopPropagation="true"

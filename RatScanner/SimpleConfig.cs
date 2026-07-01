@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace RatScanner;
+namespace ShuShuscanner;
 
 internal class SimpleConfig {
 	internal string Path;
@@ -65,7 +65,7 @@ internal class SimpleConfig {
 
 	private string ReadStringInternal(string key) {
 		StringBuilder temp = new(1024);
-		const string def = "RatScanner.Config.Default.Exception";
+		const string def = "ShuShuscanner.Config.Default.Exception";
 		GetPrivateProfileString(Section, key.ToLower(), def, temp, short.MaxValue, Path);
 		string result = temp.ToString();
 		return result == def ? throw new Exception(def) : result;

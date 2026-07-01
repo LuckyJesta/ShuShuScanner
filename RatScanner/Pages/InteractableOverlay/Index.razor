@@ -1,22 +1,22 @@
 ﻿@page "/interactableOverlay"
-@using RatScanner.Scan
-@using RatScanner.TarkovDev.GraphQL
+@using ShuShuscanner.Scan
+@using ShuShuscanner.TarkovDev.GraphQL
 @using Task = System.Threading.Tasks.Task;
-@using TTask = RatScanner.TarkovDev.GraphQL.Task;
-@using RatScanner.View;
+@using TTask = ShuShuscanner.TarkovDev.GraphQL.Task;
+@using ShuShuscanner.View;
 @using Color = MudBlazor.Color
 @using System.Diagnostics;
-@using RatScanner.Pages.InteractableOverlay.Services;
-@using RatScanner.Pages.InteractableOverlay.Components;
-@using SearchResult = RatScanner.Pages.InteractableOverlay.Services.SearchResult;
+@using ShuShuscanner.Pages.InteractableOverlay.Services;
+@using ShuShuscanner.Pages.InteractableOverlay.Components;
+@using SearchResult = ShuShuscanner.Pages.InteractableOverlay.Services.SearchResult;
 @inject MenuVM MenuVM
-@inject RatScanner.VirtualScreenOffset VirtualScreenOffset
+@inject ShuShuscanner.VirtualScreenOffset VirtualScreenOffset
 @inject SettingsVM SettingsVM;
 @inject IJSRuntime JSRuntime;
 @implements IDisposable
 
 <div id="click-away-background" style="position: absolute; width: 100%; height: 100%;"
-     onmousedown="if (event.target == this) DotNet.invokeMethodAsync('RatScanner', 'JSHideOverlay')"></div>
+     onmousedown="if (event.target == this) DotNet.invokeMethodAsync('ShuShuscanner', 'JSHideOverlay')"></div>
 <div style="width: 100%; height: 100%;">
     <div style="position: relative; top: 20%; pointer-events: none;">
         <div class="d-flex align-content-center justify-center">

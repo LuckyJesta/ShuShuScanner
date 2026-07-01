@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace RatScanner;
+namespace ShuShuscanner;
 
 internal static class Logger {
 	private static readonly object SyncObject = new();
@@ -44,17 +43,9 @@ internal static class Logger {
 		AppendToLog(logMessage);
 
 		// Setup info box
-		string title = "RatScanner " + RatConfig.Version;
+		string title = "ShuShuscanner " + RatConfig.Version;
 
-		// Ask to open FAQ
-		string faqBoxMessage = message + "\n\nThe FAQ will probably help with that.\nDo you want to open it now?";
-		MessageBoxResult faqBoxResult = MessageBox.Show(faqBoxMessage, title, MessageBoxButton.YesNo, MessageBoxImage.Error);
-		if (faqBoxResult == MessageBoxResult.Yes) OpenFAQ(message);
-
-		// Ask for git issue creation
-		string gitBoxMessage = "Would you like to create a issue on GitHub?";
-		MessageBoxResult gitBoxResult = MessageBox.Show(gitBoxMessage, title, MessageBoxButton.YesNo, MessageBoxImage.Question);
-		if (gitBoxResult == MessageBoxResult.Yes) CreateGitHubIssue(message, e);
+		MessageBox.Show(message + "\n\nDetails were written to the local log file.", title, MessageBoxButton.OK, MessageBoxImage.Error);
 
 		// Exit after error is handled
 		Environment.Exit(0);
@@ -72,12 +63,12 @@ internal static class Logger {
 
 	internal static void ShowMessage(string message, string? title = null) {
 		LogInfo(message);
-		MessageBox.Show(message, title ?? "Rat Scanner " + RatConfig.Version, MessageBoxButton.OK, MessageBoxImage.Information);
+		MessageBox.Show(message, title ?? "ShuShuscanner " + RatConfig.Version, MessageBoxButton.OK, MessageBoxImage.Information);
 	}
 
 	internal static void ShowWarning(string message, string? title = null) {
 		LogWarning(message);
-		MessageBox.Show(message, title ?? "Rat Scanner " + RatConfig.Version, MessageBoxButton.OK, MessageBoxImage.Warning);
+		MessageBox.Show(message, title ?? "ShuShuscanner " + RatConfig.Version, MessageBoxButton.OK, MessageBoxImage.Warning);
 	}
 
 	private static string GetUniquePath(string basePath, string fileName, string extension) {
@@ -133,48 +124,4 @@ internal static class Logger {
 			}
 	}
 
-	private static void OpenFAQ(string message) {
-		// Remove everything after ':' which is commonly a path
-		message = message.Split(':')[0];
-		string url = ApiManager.GetResource(ApiManager.ResourceType.FAQLink);
-		url += "#:~:text=" + WebUtility.HtmlEncode(message);
-		OpenURL(url);
-	}
-
-	private static void CreateGitHubIssue(string message, Exception e) {
-		string body = "**Error**\n" + message + "\n";
-		if (e != null) body += "```\n" + LimitLength(e.ToString(), 1000) + "\n```\n";
-
-		body += "<details>\n<summary>Log</summary>\n\n```\n";
-		body += LimitLength(ReadAll(), 3000);
-		body += "\n```\n</details>";
-
-		string title = message;
-
-		string labels = "bug";
-
-		string url = ApiManager.GetResource(ApiManager.ResourceType.GithubLink);
-		url += "/issues/new";
-		url += "?body=" + WebUtility.UrlEncode(body);
-		url += "&title=" + WebUtility.UrlEncode(title);
-		url += "&labels=" + WebUtility.UrlEncode(labels);
-
-		OpenURL(url);
-	}
-
-	private static string LimitLength(string input, int length) {
-		return input[..Math.Min(length, input.Length)];
-	}
-
-	private static void OpenURL(string url) {
-		ProcessStartInfo psi = new() {
-			FileName = url,
-			UseShellExecute = true,
-		};
-		Process.Start(psi);
-	}
-
-	private static string ReadAll() {
-		return File.ReadAllText(RatConfig.Paths.LogFile, Encoding.UTF8);
-	}
 }

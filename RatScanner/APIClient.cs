@@ -1,8 +1,8 @@
-﻿using RatScanner.FetchModels.TarkovTracker;
+﻿using ShuShuscanner.FetchModels.TarkovTracker;
 using System.Net;
 using System.Net.Http;
 
-namespace RatScanner;
+namespace ShuShuscanner;
 
 internal static class APIClient {
 	private static readonly HttpClient httpClient = new(new HttpClientHandler {
@@ -11,7 +11,7 @@ internal static class APIClient {
 
 	private static HttpRequestMessage formRequest(HttpMethod method, string url, string? bearerToken = null) {
 		HttpRequestMessage request = new(method, url);
-		request.Headers.Add("User-Agent", "RatScanner-Client/3");
+		request.Headers.Add("User-Agent", "ShuShuscanner-Client/3");
 		if (bearerToken != null) request.Headers.Add("Authorization", "Bearer " + bearerToken);
 
 		return request;

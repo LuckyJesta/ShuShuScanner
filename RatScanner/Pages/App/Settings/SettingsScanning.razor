@@ -1,5 +1,5 @@
 ﻿@page "/app/settings/scanning"
-@using RatScanner.Components;
+@using ShuShuscanner.Components;
 @inject SettingsVM SettingsVM
 @inject IJSRuntime JSRuntime
 @inject LocalizationService Localizer
@@ -15,7 +15,7 @@
         </MudItem>
         <MudItem xs="12">
             <MudPaper Class="align-center justify-center pa-2 mx-2 mb-2" Elevation="2">
-                <MudGrid Spacing="0" Class="pa-0 ma-0">
+                <MudStack Spacing="0" Class="pa-0 ma-0">
                     <MudSelect @bind-Value="@SettingsVM.NameScanLanguage" T="int" Label="@Localizer["NameScanLanguage"]" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Text" Margin="Margin.Dense" Dense="true" Class="mx-1">
                         @foreach (var language in GetLanguages())
                         {
@@ -26,7 +26,15 @@
                     </MudSelect>
                     <MudCheckBox @bind-Checked="@SettingsVM.EnableNameScan" Label="@Localizer["EnableNameScan"]" Dense="true" Size="Size.Small" Class="pa-0 ma-0"></MudCheckBox>
                     <MudCheckBox @bind-Checked="@SettingsVM.EnableAutoNameScan" Label="@Localizer["AutomaticScanning"]" Dense="true" Size="Size.Small" Class="pa-0 ma-0"></MudCheckBox>
-                </MudGrid>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12">
+            <MudPaper Class="align-center justify-center pa-2 mx-2 mb-2" Elevation="2">
+                <MudStack Spacing="1" AlignItems="AlignItems.Stretch">
+                    <MudText>@Localizer["NameScanHotkey"]</MudText>
+                    <HotkeySelector Hotkey="@SettingsVM.NameScanHotkey"></HotkeySelector>
+                </MudStack>
             </MudPaper>
         </MudItem>
         <MudItem xs="12">
@@ -40,15 +48,9 @@
         </MudItem>
         <MudItem xs="12">
             <MudPaper Class="align-center justify-center pa-2 mx-2 mb-2" Elevation="2">
-                <MudStack Spacing="0" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Row="true">
-                    <MudItem>
-                        <MudText>
-                            @Localizer["IconScanHotkey"]
-                        </MudText>
-                    </MudItem>
-                    <MudItem>
-                        <HotkeySelector Hotkey="@SettingsVM.IconScanHotkey"></HotkeySelector>
-                    </MudItem>
+                <MudStack Spacing="1" AlignItems="AlignItems.Stretch">
+                    <MudText>@Localizer["IconScanHotkey"]</MudText>
+                    <HotkeySelector Hotkey="@SettingsVM.IconScanHotkey"></HotkeySelector>
                 </MudStack>
             </MudPaper>
         </MudItem>

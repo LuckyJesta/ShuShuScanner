@@ -1,11 +1,11 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using static RatScanner.InteractiveMapData;
+using static ShuShuscanner.InteractiveMapData;
 
-namespace RatScanner;
+namespace ShuShuscanner;
 
 public static class MapDataLoader
 {

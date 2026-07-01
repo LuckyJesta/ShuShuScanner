@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace RatScanner.View;
+namespace ShuShuscanner.View;
 
 public static class WindowsServices {
 	private const int WsExTransparent = 0x00000020;

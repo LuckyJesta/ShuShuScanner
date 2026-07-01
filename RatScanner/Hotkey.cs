@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows.Input;
 
-namespace RatScanner;
+namespace ShuShuscanner;
 
 public class Hotkey : INotifyPropertyChanged {
 	/// <summary>

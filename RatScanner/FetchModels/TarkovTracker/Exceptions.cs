@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RatScanner.FetchModels.TarkovTracker;
+namespace ShuShuscanner.FetchModels.TarkovTracker;
 
 // Exception for when TarkovTracker rate limiting is hit
 public class RateLimitExceededException : Exception {

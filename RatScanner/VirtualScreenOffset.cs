@@ -1,4 +1,4 @@
-﻿namespace RatScanner;
+﻿namespace ShuShuscanner;
 
 public class VirtualScreenOffset {
 	public int XOffset { get; }

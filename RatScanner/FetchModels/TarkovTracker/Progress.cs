@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace RatScanner.FetchModels.TarkovTracker;
+namespace ShuShuscanner.FetchModels.TarkovTracker;
 
 public class Progress {
 	[JsonProperty("id")]

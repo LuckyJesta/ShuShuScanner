@@ -1,6 +1,6 @@
-{
+﻿{
 	"profiles": {
-		"RatScanner": {
+		"ShuShuscanner": {
 			"commandName": "Project",
 			"jsWebView2Debugging": false
 		}

@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
-using RatScanner.FetchModels.TarkovTracker;
+using ShuShuscanner.FetchModels.TarkovTracker;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
-namespace RatScanner;
+namespace ShuShuscanner;
 
 // Storing information about progression from TarkovTracker API
 public class TarkovTrackerDB {

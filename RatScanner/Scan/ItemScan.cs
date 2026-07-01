@@ -1,6 +1,6 @@
 ﻿using RatEye;
 
-namespace RatScanner.Scan;
+namespace ShuShuscanner.Scan;
 
 public abstract class ItemScan
 

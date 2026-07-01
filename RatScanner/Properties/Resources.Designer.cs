@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RatScanner.Properties {
+namespace ShuShuscanner.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace RatScanner.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RatScanner.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ShuShuscanner.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -63,9 +63,9 @@ namespace RatScanner.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap RatLogoMedium {
+        internal static System.Drawing.Bitmap ShuShuLogoMedium {
             get {
-                object obj = ResourceManager.GetObject("RatLogoMedium", resourceCulture);
+                object obj = ResourceManager.GetObject("ShuShuLogoMedium", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace RatScanner.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Icon ähnlich wie (Symbol).
         /// </summary>
-        internal static System.Drawing.Icon RatLogoSmall {
+        internal static System.Drawing.Icon ShuShuLogoSmall {
             get {
-                object obj = ResourceManager.GetObject("RatLogoSmall", resourceCulture);
+                object obj = ResourceManager.GetObject("ShuShuLogoSmall", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }

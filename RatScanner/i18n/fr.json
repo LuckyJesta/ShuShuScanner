@@ -21,6 +21,7 @@
   "ScanningSettingsTitle": "Paramètres d'analyse",
   "NameScanLanguage": "Langue de l'analyse des noms",
   "EnableNameScan": "Activer l'analyse des noms",
+  "NameScanHotkey": "Name Scan Hotkey",
   "AutomaticScanning": "Analyse automatique",
   "EnableIconScan": "Activer l'analyse des icônes",
   "ScanRotatedIcons": "Analyser les icônes pivotées",

@@ -1,15 +1,15 @@
-﻿@using RatScanner.ViewModel
+﻿@using ShuShuscanner.ViewModel
 @inject SettingsVM SettingsVM
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime;
 @inject LocalizationService Localizer;
 @implements IDisposable
 
-<MudGrid Class="px-2 my-2" Spacing="0" Style="position: fixed; bottom: 0">
-    <MudItem xs="6" Class="d-flex justify-start pr-1">
+<MudGrid Class="px-2 my-2" Spacing="1" Style="position: sticky; bottom: 0; z-index: 10; background: #121212;">
+    <MudItem xs="12" Class="d-flex justify-start">
         <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Class="light-green darken-3" FullWidth="true" OnClick="SaveSettings">@Localizer["SaveButton"]</MudButton>
     </MudItem>
-    <MudItem xs="6" Class="d-flex justify-end pl-1">
+    <MudItem xs="12" Class="d-flex justify-end">
         <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" FullWidth="true" OnClick="DiscardSettings">@Localizer["CancelButton"]</MudButton>
     </MudItem>
 </MudGrid>

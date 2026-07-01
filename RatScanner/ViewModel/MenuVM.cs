@@ -1,5 +1,5 @@
-﻿using RatScanner.Scan;
-using RatScanner.TarkovDev.GraphQL;
+﻿using ShuShuscanner.Scan;
+using ShuShuscanner.TarkovDev.GraphQL;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,12 +7,13 @@ using System.Globalization;
 using System.Linq;
 using System.Web;
 
-namespace RatScanner.ViewModel;
+namespace ShuShuscanner.ViewModel;
 
 internal class MenuVM : INotifyPropertyChanged {
-	private RatScannerMain _dataSource;
+	private ShuShuscannerMain _dataSource;
+	private readonly LocalizationService _localizationService = new();
 
-	public RatScannerMain DataSource {
+	public ShuShuscannerMain DataSource {
 		get => _dataSource;
 		set {
 			_dataSource = value;
@@ -22,15 +23,23 @@ internal class MenuVM : INotifyPropertyChanged {
 
 	public ItemQueue ItemScans => DataSource.ItemScans;
 
+	public string ScanStatusText => DataSource.ScanStatusText;
+
+	public bool HasScanStatus => DataSource.HasScanStatus;
+
+	public string AvgDailyPriceLabel => _localizationService["AvgDailyPrice"];
+
+	public string PricePerSlotLabel => _localizationService["PricePerSlot"];
+
+	public string KappaNeededLabel => _localizationService["KappaNeeded"];
+
+	public string NeededQuestHideoutLabel => _localizationService["NeededQuestHideout"];
+
+	public string UpdatedTimestampLabel => _localizationService["UpdatedTimestamp"];
+
 	public ItemScan LastItemScan => ItemScans.LastOrDefault() ?? throw new Exception("ItemQueue is empty!");
 
 	public Item LastItem => LastItemScan.Item;
-
-	public string DiscordLink => ApiManager.GetResource(ApiManager.ResourceType.DiscordLink);
-
-	public string GithubLink => ApiManager.GetResource(ApiManager.ResourceType.GithubLink);
-
-	public string PatreonLink => ApiManager.GetResource(ApiManager.ResourceType.PatreonLink);
 
 	public string Updated => DateTime.Parse(LastItem.Updated).ToLocalTime().ToString(CultureInfo.CurrentCulture);
 
@@ -64,8 +73,8 @@ internal class MenuVM : INotifyPropertyChanged {
 	public List<KeyValuePair<string, KeyValuePair<int, int>>>? ItemTeamNeeds {
 		get {
 			if (!RatConfig.Tracking.TarkovTracker.Enable) return null;
-			List<FetchModels.TarkovTracker.UserProgress> progress = RatScannerMain.Instance.TarkovTrackerDB.Progress;
-			IEnumerable<FetchModels.TarkovTracker.UserProgress> teamProgress = progress.Where(x => x.UserId != RatScannerMain.Instance.TarkovTrackerDB.Self);
+			List<FetchModels.TarkovTracker.UserProgress> progress = ShuShuscannerMain.Instance.TarkovTrackerDB.Progress;
+			IEnumerable<FetchModels.TarkovTracker.UserProgress> teamProgress = progress.Where(x => x.UserId != ShuShuscannerMain.Instance.TarkovTrackerDB.Self);
 
 			List<KeyValuePair<string, KeyValuePair<int, int>>> needs = new();
 			foreach (FetchModels.TarkovTracker.UserProgress? memberProgress in teamProgress) {
@@ -95,7 +104,7 @@ internal class MenuVM : INotifyPropertyChanged {
 
 	public event PropertyChangedEventHandler PropertyChanged;
 
-	public MenuVM(RatScannerMain ratScanner) {
+	public MenuVM(ShuShuscannerMain ratScanner) {
 		DataSource = ratScanner;
 		DataSource.PropertyChanged += ModelPropertyChanged;
 	}

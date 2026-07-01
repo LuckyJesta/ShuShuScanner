@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RatScanner", "RatScanner\RatScanner.csproj", "{6C9373BE-454F-4A4A-850E-17AC27C76992}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShuShuscanner", "RatScanner\RatScanner.csproj", "{6C9373BE-454F-4A4A-850E-17AC27C76992}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

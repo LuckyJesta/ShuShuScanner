@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace RatScanner;
+namespace ShuShuscanner;
 
 internal class ActiveHotkey : Hotkey, IDisposable {
 	private event UserActivityHelper.KeyUpEventHandler HotkeyPressedEventHandler;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace RatScanner;
+namespace ShuShuscanner;
 public static class Extensions {
 	public static string ToShortString(this int value) {
 		string str = value.ToString();

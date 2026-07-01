@@ -1,16 +1,16 @@
-﻿using RatScanner.FetchModels.TarkovTracker;
-using RatScanner.TarkovDev.GraphQL;
+﻿using ShuShuscanner.FetchModels.TarkovTracker;
+using ShuShuscanner.TarkovDev.GraphQL;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RatScanner;
+namespace ShuShuscanner;
 
 public static class ItemExtensions {
 	private static UserProgress GetUserProgress() {
 		UserProgress? progress = null;
-		if (RatConfig.Tracking.TarkovTracker.Enable && RatScannerMain.Instance.TarkovTrackerDB.Progress.Count >= 1) {
-			System.Collections.Generic.List<UserProgress> teamProgress = RatScannerMain.Instance.TarkovTrackerDB.Progress;
-			progress = teamProgress.FirstOrDefault(x => x.UserId == RatScannerMain.Instance.TarkovTrackerDB.Self);
+		if (RatConfig.Tracking.TarkovTracker.Enable && ShuShuscannerMain.Instance.TarkovTrackerDB.Progress.Count >= 1) {
+			System.Collections.Generic.List<UserProgress> teamProgress = ShuShuscannerMain.Instance.TarkovTrackerDB.Progress;
+			progress = teamProgress.FirstOrDefault(x => x.UserId == ShuShuscannerMain.Instance.TarkovTrackerDB.Self);
 		}
 		return progress ?? new UserProgress();
 	}
@@ -36,9 +36,11 @@ public static class ItemExtensions {
 
 		Task[] tasks = TarkovDevAPI.GetTasks();
 
-		foreach (Task task in tasks) {
+		foreach (Task? task in tasks) {
+			if (task?.Id == null) continue;
+
 			// Skip if task is already completed
-			if (progress.Tasks.Any(p => p.Id == task.Id && p.Complete)) continue;
+			if (progress.Tasks?.Any(p => p.Id == task.Id && p.Complete) == true) continue;
 
 			// Skip if task is to be excluded
 			if (excludedTasks.Contains(task.Id)) continue;
@@ -52,7 +54,7 @@ public static class ItemExtensions {
 					needed = oGiveItem.Count;
 					if (task.KappaRequired == true) kappaCount += oGiveItem.Count;
 					// Subtract amount of already collected items
-					List<Progress> objectiveProgress = progress.TaskObjectives.Where(p => p.Id == objective.Id).ToList();
+					List<Progress> objectiveProgress = progress.TaskObjectives?.Where(p => p.Id == objective.Id).ToList() ?? new List<Progress>();
 					foreach (Progress p in objectiveProgress) needed -= p.Complete ? oGiveItem.Count : p.Count;
 					count += needed;
 					if (task.KappaRequired == true) kappaCount += needed;
@@ -60,7 +62,7 @@ public static class ItemExtensions {
 					if ((!oPlantItem.Items?.Any(i => i?.Id == item.Id)) ?? true) continue;	// Skip if item is not the one we are looking for
 					if (!showNonFir) continue;												// Skip if item is not FIR
 					needed = oPlantItem.Count;
-					List<Progress> objectiveProgress = progress.TaskObjectives.Where(p => p.Id == objective.Id).ToList();
+					List<Progress> objectiveProgress = progress.TaskObjectives?.Where(p => p.Id == objective.Id).ToList() ?? new List<Progress>();
 					foreach (Progress p in objectiveProgress) needed -= p.Complete ? oPlantItem.Count : p.Count;
 					count += needed;
 					if (task.KappaRequired == true) kappaCount += needed;
@@ -68,7 +70,7 @@ public static class ItemExtensions {
 					if (oMark.MarkerItem?.Id != item.Id) continue;  // Skip if item is not the one we are looking for
 					if (!showNonFir) continue;                      // Skip if item is not FIR
 					needed = 1;
-					List<Progress> objectiveProgress = progress.TaskObjectives.Where(p => p.Id == objective.Id).ToList();
+					List<Progress> objectiveProgress = progress.TaskObjectives?.Where(p => p.Id == objective.Id).ToList() ?? new List<Progress>();
 					foreach (Progress p in objectiveProgress) needed -= 1;
 					count += needed;
 					if (task.KappaRequired == true) kappaCount += needed;
@@ -76,7 +78,7 @@ public static class ItemExtensions {
 					if (oBuildWeapon.Item?.Id != item.Id) continue; // Skip if item is not the one we are looking for
 					if (!showNonFir) continue;                      // Skip if item is not FIR
 					needed = 1;
-					List<Progress> objectiveProgress = progress.TaskObjectives.Where(p => p.Id == objective.Id).ToList();
+					List<Progress> objectiveProgress = progress.TaskObjectives?.Where(p => p.Id == objective.Id).ToList() ?? new List<Progress>();
 					foreach (Progress p in objectiveProgress) needed -= 1;
 					count += needed;
 					if (task.KappaRequired == true) kappaCount += needed;
@@ -98,14 +100,14 @@ public static class ItemExtensions {
 				if (level == null) continue;
 
 				// Skip if level is already built
-				if (progress.HideoutModules.Any(p => p.Id == level.Id && p.Complete)) continue;
+				if (progress.HideoutModules?.Any(p => p.Id == level.Id && p.Complete) == true) continue;
 
 				if (level?.ItemRequirements == null) continue;
 				foreach (RequirementItem? requiredItem in level.ItemRequirements) {
 					if (requiredItem?.Item?.Id != item.Id) continue;
 
 					count += requiredItem.Count;
-					List<Progress> objectiveProgress = progress.HideoutParts.Where(p => p.Id == requiredItem.Id).ToList();
+					List<Progress> objectiveProgress = progress.HideoutParts?.Where(p => p.Id == requiredItem.Id).ToList() ?? new List<Progress>();
 					foreach (Progress p in objectiveProgress) count -= p.Complete ? requiredItem.Count : p.Count;
 				}
 			}

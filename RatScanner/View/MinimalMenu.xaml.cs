@@ -1,12 +1,12 @@
 ﻿using RatEye;
-using RatScanner.ViewModel;
+using ShuShuscanner.ViewModel;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
-using RCMinUi = RatScanner.RatConfig.MinimalUi;
+using RCMinUi = ShuShuscanner.RatConfig.MinimalUi;
 using UserControl = System.Windows.Controls.UserControl;
 
-namespace RatScanner.View;
+namespace ShuShuscanner.View;
 
 /// <summary>
 /// Interaction logic for MinimalMenu.xaml
@@ -17,7 +17,7 @@ public partial class MinimalMenu : UserControl, ISwitchable {
 
 	private MinimalMenu() {
 		InitializeComponent();
-		DataContext = new MenuVM(RatScannerMain.Instance);
+		DataContext = new MenuVM(ShuShuscannerMain.Instance);
 		UpdateElements();
 	}
 

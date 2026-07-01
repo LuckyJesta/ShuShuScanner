@@ -1,14 +1,16 @@
 ﻿using RatStash;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RatScanner.ViewModel;
+namespace ShuShuscanner.ViewModel;
 
 internal class SettingsVM : INotifyPropertyChanged {
 	public bool EnableNameScan { get; set; }
 	public bool EnableAutoNameScan { get; set; }
 	public int NameScanLanguage { get; set; }
+	public Hotkey NameScanHotkey { get; set; }
 
 	public bool EnableIconScan { get; set; }
 	public bool ScanRotatedIcons { get; set; }
@@ -65,6 +67,7 @@ internal class SettingsVM : INotifyPropertyChanged {
 		EnableNameScan = RatConfig.NameScan.Enable;
 		EnableAutoNameScan = RatConfig.NameScan.EnableAuto;
 		NameScanLanguage = (int)RatConfig.NameScan.Language;
+		NameScanHotkey = RatConfig.NameScan.Hotkey;
 
 		EnableIconScan = RatConfig.IconScan.Enable;
 		ScanRotatedIcons = RatConfig.IconScan.ScanRotatedIcons;
@@ -107,18 +110,20 @@ internal class SettingsVM : INotifyPropertyChanged {
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
 	}
 
-	public async Task SaveSettings() {
-		bool updateMarketDB = NameScanLanguage != (int)RatConfig.NameScan.Language;
+	public Task SaveSettings() {
 		bool updateTarkovTrackerToken = TarkovTrackerToken != RatConfig.Tracking.TarkovTracker.Token;
 		bool updateTarkovTrackerBackend = TarkovTrackerBackend != RatConfig.Tracking.TarkovTracker.Backend;
 		bool updateResolution = ScreenWidth != RatConfig.ScreenWidth || ScreenHeight != RatConfig.ScreenHeight;
 		bool updateLanguage = RatConfig.NameScan.Language != (Language)NameScanLanguage;
+		bool updateGameMode = RatConfig.GameMode != GameMode;
 		bool updateUiLanguage = RatConfig.UserInterface.Language != UiLanguage;
+		bool updateRatEyeData = updateLanguage || updateGameMode;
 
 		// Save config
 		RatConfig.NameScan.Enable = EnableNameScan;
 		RatConfig.NameScan.EnableAuto = EnableAutoNameScan;
 		RatConfig.NameScan.Language = (Language)NameScanLanguage;
+		RatConfig.NameScan.Hotkey = NameScanHotkey;
 
 		RatConfig.IconScan.Enable = EnableIconScan;
 		RatConfig.IconScan.ScanRotatedIcons = ScanRotatedIcons;
@@ -161,26 +166,45 @@ internal class SettingsVM : INotifyPropertyChanged {
 		// Apply config
 		PageSwitcher.Instance.Topmost = RatConfig.AlwaysOnTop;
 		PageSwitcher.Instance.ResetWindowSize();
-		await TarkovDevAPI.InitializeCache();
 		if (updateTarkovTrackerToken || updateTarkovTrackerBackend) UpdateTarkovTrackerToken();
-		if (updateUiLanguage) _localizationService.SetLanguage(UiLanguage);
-		if (updateResolution || updateLanguage) RatScannerMain.Instance.SetupRatEye();
+		if (updateUiLanguage) {
+			_localizationService.SetLanguage(UiLanguage);
+			PageSwitcher.Instance.RefreshTrayLanguage();
+			ShuShuscannerMain.Instance.RefreshScanStatusTranslation();
+		}
+		if (updateResolution && !updateRatEyeData) ShuShuscannerMain.Instance.SetupRatEye();
+		if (updateRatEyeData) _ = RefreshTarkovDevCacheAndRatEyeAsync();
 
 		RatEye.Config.LogDebug = RatConfig.LogDebug;
-		RatScannerMain.Instance.HotkeyManager.RegisterHotkeys();
+		ShuShuscannerMain.Instance.HotkeyManager.RegisterHotkeys();
 
 		// Save config to file
 		Logger.LogInfo("Saving config...");
 		RatConfig.SaveConfig();
 		Logger.LogInfo("Config saved!");
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
+		return Task.CompletedTask;
+	}
+
+	private static async Task RefreshTarkovDevCacheAndRatEyeAsync() {
+		try {
+			Logger.LogInfo("Refreshing TarkovDev cache after settings changed...");
+			ShuShuscannerMain.Instance.SetScanStatusKey("ScanStatusSettingsRefresh");
+			await TarkovDevAPI.InitializeCache().ConfigureAwait(false);
+			ShuShuscannerMain.Instance.SetupRatEye();
+			Logger.LogInfo("TarkovDev cache refreshed after settings changed.");
+			ShuShuscannerMain.Instance.SetScanStatusKey("ScanStatusSettingsRefreshComplete", true);
+		} catch (Exception e) {
+			Logger.LogWarning("Unable to refresh TarkovDev cache after settings changed.", e);
+			ShuShuscannerMain.Instance.SetScanStatusKey("ScanStatusSettingsRefreshFailed", true);
+		}
 	}
 
 	private void UpdateTarkovTrackerToken() {
 		string token = RatConfig.Tracking.TarkovTracker.Token;
 		if (token == "") return;
-		RatScannerMain.Instance.TarkovTrackerDB.Token = RatConfig.Tracking.TarkovTracker.Token;
-		var db = RatScannerMain.Instance.TarkovTrackerDB;
+		ShuShuscannerMain.Instance.TarkovTrackerDB.Token = RatConfig.Tracking.TarkovTracker.Token;
+		var db = ShuShuscannerMain.Instance.TarkovTrackerDB;
 		if (db.TestToken(token)) {
 			db.UpdateToken();
 			return;

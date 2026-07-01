@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace RatScanner.FetchModels.TarkovTracker;
+namespace ShuShuscanner.FetchModels.TarkovTracker;
 
 // Model representing the progress data of a TarkovTracker user
 public class UserProgress {

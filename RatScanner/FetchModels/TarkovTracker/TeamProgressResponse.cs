@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace RatScanner.FetchModels.TarkovTracker;
+namespace ShuShuscanner.FetchModels.TarkovTracker;
 
 public class TeamProgressResponse {
 	[JsonProperty("data")]

@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using RatScanner.TarkovDev.GraphQL;
+using ShuShuscanner.TarkovDev.GraphQL;
 using RatStash;
 using System;
 using System.Diagnostics;
@@ -13,7 +13,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using Key = System.Windows.Input.Key;
 
-namespace RatScanner;
+namespace ShuShuscanner;
 
 internal static class RatConfig {
 	[DllImport("user32.dll")]
@@ -36,7 +36,7 @@ internal static class RatConfig {
 
 		private const string EftTempDir = "Battlestate Games\\EscapeFromTarkov\\";
 		private static readonly string EftTemp = Path.Combine(Path.GetTempPath(), EftTempDir);
-		private static readonly string TempDir = Path.Combine(Path.GetTempPath(), "RatScanner");
+		private static readonly string TempDir = Path.Combine(Path.GetTempPath(), "ShuShuscanner");
 		internal static readonly string CacheDir = Path.Combine(TempDir, "Cache");
 		internal static string DynamicIcon = Path.Combine(EftTemp, "Icon Cache");
 		internal static string StaticCorrelation = Path.Combine(StaticIcon, "correlation.json");
@@ -46,7 +46,6 @@ internal static class RatConfig {
 		internal static string UnknownIcon = Path.Combine(Data, "unknown.png");
 		internal static string ConfigFile = Path.Combine(Base, "config.cfg");
 		internal static string Debug = Path.Combine(Base, "Debug");
-		internal static string Updater = Path.Combine(Base, "RatUpdater.exe");
 		internal static string LogFile = Path.Combine(Base, "Log.txt");
 
 		internal static string i18nDir => Path.Combine(Base, "i18n");
@@ -57,6 +56,7 @@ internal static class RatConfig {
 		internal static bool Enable = true;
 		internal static bool EnableAuto = false;
 		internal static Language Language = Language.English;
+		internal static Hotkey Hotkey = new(null, new[] { MouseButton.Left });
 		internal static float ConfWarnThreshold = 0.85f;
 		internal static int MarkerScanSize => (int)(50 * GameScale);
 		internal static int TextWidth => (int)(600 * GameScale);
@@ -81,7 +81,7 @@ internal static class RatConfig {
 
 	// UI options
 	internal static class UserInterface {
-		internal static UiLanguage Language = UiLanguage.English;
+		internal static UiLanguage Language = UiLanguage.Chinese;
 	}
 
 	// Minimal UI
@@ -130,12 +130,6 @@ internal static class RatConfig {
 		}
 	}
 
-	// OAuth2 refresh tokens
-	internal static class OAuthRefreshToken {
-		internal static string Discord = "";
-		internal static string Patreon = "";
-	}
-
 	// Other
 #if DEBUG
 	internal static bool LogDebug {
@@ -162,7 +156,7 @@ internal static class RatConfig {
 	internal static int LastWindowPositionY = int.MinValue;
 	internal static WindowMode LastWindowMode = WindowMode.Normal;
 
-	internal static float GameScale => RatScannerMain.Instance.RatEyeEngine.Config.ProcessingConfig.Scale;
+	internal static float GameScale => ShuShuscannerMain.Instance.RatEyeEngine.Config.ProcessingConfig.Scale;
 
 	private static bool IsSupportedConfigVersion() {
 		SimpleConfig config = new(Paths.ConfigFile, "Other");
@@ -195,6 +189,7 @@ internal static class RatConfig {
 		NameScan.Enable = config.ReadBool(nameof(NameScan.Enable), NameScan.Enable);
 		NameScan.EnableAuto = config.ReadBool(nameof(NameScan.EnableAuto), NameScan.EnableAuto);
 		NameScan.Language = (Language)config.ReadInt(nameof(NameScan.Language), (int)NameScan.Language);
+		NameScan.Hotkey = config.ReadHotkey(nameof(NameScan.Hotkey), NameScan.Hotkey);
 
 		config.Section = nameof(IconScan);
 		IconScan.Enable = config.ReadBool(nameof(IconScan.Enable), IconScan.Enable);
@@ -236,10 +231,6 @@ internal static class RatConfig {
 		Overlay.Search.BlurBehind = config.ReadBool(nameof(Overlay.Search.BlurBehind), Overlay.Search.BlurBehind);
 		Overlay.Search.Hotkey = config.ReadHotkey(nameof(Overlay.Search.Hotkey), Overlay.Search.Hotkey);
 
-		config.Section = nameof(OAuthRefreshToken);
-		OAuthRefreshToken.Discord = config.ReadSecureString(nameof(OAuthRefreshToken.Discord), OAuthRefreshToken.Discord);
-		OAuthRefreshToken.Patreon = config.ReadSecureString(nameof(OAuthRefreshToken.Patreon), OAuthRefreshToken.Patreon);
-
 		config.Section = "Other";
 		if (!SetScreen) {
 			ScreenWidth = config.ReadInt(nameof(ScreenWidth), ScreenWidth);
@@ -264,6 +255,7 @@ internal static class RatConfig {
 		config.WriteBool(nameof(NameScan.Enable), NameScan.Enable);
 		config.WriteBool(nameof(NameScan.EnableAuto), NameScan.EnableAuto);
 		config.WriteInt(nameof(NameScan.Language), (int)NameScan.Language);
+		config.WriteHotkey(nameof(NameScan.Hotkey), NameScan.Hotkey);
 
 		config.Section = nameof(IconScan);
 		config.WriteBool(nameof(IconScan.Enable), IconScan.Enable);
@@ -304,10 +296,6 @@ internal static class RatConfig {
 		config.WriteBool(nameof(Overlay.Search.Enable), Overlay.Search.Enable);
 		config.WriteBool(nameof(Overlay.Search.BlurBehind), Overlay.Search.BlurBehind);
 		config.WriteHotkey(nameof(Overlay.Search.Hotkey), Overlay.Search.Hotkey);
-
-		config.Section = nameof(OAuthRefreshToken);
-		config.WriteSecureString(nameof(OAuthRefreshToken.Discord), OAuthRefreshToken.Discord);
-		config.WriteSecureString(nameof(OAuthRefreshToken.Patreon), OAuthRefreshToken.Patreon);
 
 		config.Section = "Other";
 		config.WriteInt(nameof(ScreenWidth), ScreenWidth);

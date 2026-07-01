@@ -1,10 +1,10 @@
-using RatScanner.TarkovDev.GraphQL;
+﻿using ShuShuscanner.TarkovDev.GraphQL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TTask = RatScanner.TarkovDev.GraphQL.Task;
+using TTask = ShuShuscanner.TarkovDev.GraphQL.Task;
 
-namespace RatScanner.Pages.InteractableOverlay.Services;
+namespace ShuShuscanner.Pages.InteractableOverlay.Services;
 
 public class SearchService {
 	public async System.Threading.Tasks.Task<IEnumerable<SearchResult>> SearchMapsAsync(string value) {

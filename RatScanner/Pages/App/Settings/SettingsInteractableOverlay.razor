@@ -1,5 +1,5 @@
 ﻿@page "/app/settings/interactableOverlay"
-@using RatScanner.Components;
+@using ShuShuscanner.Components;
 @inject SettingsVM SettingsVM
 @inject IJSRuntime JSRuntime
 @inject LocalizationService Localizer
@@ -22,15 +22,9 @@
         </MudItem>
         <MudItem xs="12">
             <MudPaper Class="align-center justify-center pa-2 mx-2 mb-2" Elevation="2">
-                <MudStack Spacing="0" Justify="Justify.SpaceBetween" Row="true">
-                    <MudItem>
-                        <MudText>
-                            @Localizer["OpenSearchOverlay"]
-                        </MudText>
-                    </MudItem>
-                    <MudItem>
-                        <HotkeySelector Hotkey="@SettingsVM.InteractableOverlayHotkey"></HotkeySelector>
-                    </MudItem>
+                <MudStack Spacing="1" AlignItems="AlignItems.Stretch">
+                    <MudText>@Localizer["OpenSearchOverlay"]</MudText>
+                    <HotkeySelector Hotkey="@SettingsVM.InteractableOverlayHotkey"></HotkeySelector>
                 </MudStack>
             </MudPaper>
         </MudItem>

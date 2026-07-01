@@ -8,7 +8,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace RatScanner;
+namespace ShuShuscanner;
 
 /// <summary>
 /// Interaction logic for App.xaml
@@ -30,7 +30,7 @@ public partial class App : Application, ISingleInstance {
 			return;
 		}
 
-		new SplashScreen("Resources\\RatLogoMedium.png").Show(true, true);
+		new SplashScreen("Resources\\ShuShuLogoMedium.png").Show(true, true);
 		base.OnStartup(e);
 
 		// Set current working directory to executable location

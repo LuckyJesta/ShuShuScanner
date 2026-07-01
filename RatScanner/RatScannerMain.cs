@@ -1,5 +1,5 @@
 ﻿using RatEye;
-using RatScanner.Scan;
+using ShuShuscanner.Scan;
 using RatStash;
 using System;
 using System.Collections.Generic;
@@ -17,17 +17,22 @@ using PixelFormat = System.Drawing.Imaging.PixelFormat;
 using Size = System.Drawing.Size;
 using Timer = System.Threading.Timer;
 
-namespace RatScanner;
+namespace ShuShuscanner;
 
-public class RatScannerMain : INotifyPropertyChanged {
-	private static RatScannerMain _instance = null!;
-	internal static RatScannerMain Instance => _instance ??= new RatScannerMain();
+public class ShuShuscannerMain : INotifyPropertyChanged {
+	private static ShuShuscannerMain _instance = null!;
+	internal static ShuShuscannerMain Instance => _instance ??= new ShuShuscannerMain();
 
 	internal readonly HotkeyManager HotkeyManager;
 
 	private Timer? _marketDBRefreshTimer;
 	private Timer? _tarkovTrackerDBRefreshTimer;
 	private Timer? _scanRefreshTimer;
+	private Timer? _scanStatusClearTimer;
+	private long _scanStatusVersion;
+	private readonly LocalizationService _localizationService = new();
+	private string _scanStatusKey = "";
+	private object[] _scanStatusArgs = Array.Empty<object>();
 
 	/// <summary>
 	/// Lock for name scanning
@@ -53,15 +58,17 @@ public class RatScannerMain : INotifyPropertyChanged {
 
 	internal ItemQueue ItemScans = new();
 
-	public RatScannerMain() {
+	public string ScanStatusText { get; private set; } = "";
+
+	public bool HasScanStatus => !string.IsNullOrWhiteSpace(ScanStatusText);
+
+	public ShuShuscannerMain() {
 		_instance = this;
 
 		// Remove old log
 		Logger.Clear();
 
-		Logger.LogInfo("----- RatScanner " + RatConfig.Version + " -----");
-		Logger.LogInfo("Checking for updates...");
-		CheckForUpdates();
+		Logger.LogInfo("----- ShuShuscanner " + RatConfig.Version + " -----");
 
 		Logger.LogInfo($"Screen Info: {RatConfig.ScreenWidth}x{RatConfig.ScreenHeight} at {RatConfig.ScreenScale * 100}%");
 
@@ -69,9 +76,7 @@ public class RatScannerMain : INotifyPropertyChanged {
 		
 		// Try to load from offline cache first for faster startup
 		if (TarkovDevAPI.TryInitializeCacheFromOffline()) {
-			// Cache loaded from offline storage, queue background refresh
-			Logger.LogInfo("Using offline cache for fast startup, refreshing in background...");
-			_ = TarkovDevAPI.InitializeCache();
+			Logger.LogInfo("Using offline cache for fast startup.");
 		} else {
 			// No offline cache available, wait for network requests
 			Logger.LogWarning("No complete offline cache available, fetching from network...");
@@ -114,45 +119,8 @@ public class RatScannerMain : INotifyPropertyChanged {
 			HotkeyManager.RegisterHotkeys();
 
 			Logger.LogInfo("Ready!");
+			_ = TarkovDevAPI.InitializeCache();
 		}).Start();
-	}
-
-	private void CheckForUpdates() {
-		string mostRecentVersion = ApiManager.GetResource(ApiManager.ResourceType.ClientVersion);
-		if (RatConfig.Version == mostRecentVersion) return;
-		Logger.LogInfo("A new version is available: " + mostRecentVersion);
-
-		string forceVersions = ApiManager.GetResource(ApiManager.ResourceType.ClientForceUpdateVersions);
-		if (forceVersions.Contains($"[{RatConfig.Version}]")) {
-			UpdateRatScanner();
-			return;
-		}
-
-		string message = "Version " + mostRecentVersion + " is available!\n";
-		message += "You are using: " + RatConfig.Version + "\n\n";
-		message += "Do you want to install it now?";
-		MessageBoxResult result = MessageBox.Show(message, "Rat Scanner Updater", MessageBoxButton.YesNo);
-		if (result == MessageBoxResult.Yes) UpdateRatScanner();
-	}
-
-	private void UpdateRatScanner() {
-		if (!File.Exists(RatConfig.Paths.Updater)) {
-			Logger.LogWarning(RatConfig.Paths.Updater + " could not be found!");
-			try {
-				string updaterLink = ApiManager.GetResource(ApiManager.ResourceType.UpdaterLink);
-				ApiManager.DownloadFile(updaterLink, RatConfig.Paths.Updater);
-			} catch (Exception e) {
-				Logger.LogError("Unable to download updater, please update manually.", e);
-				return;
-			}
-		}
-
-		ProcessStartInfo startInfo = new(RatConfig.Paths.Updater);
-		startInfo.UseShellExecute = true;
-		startInfo.ArgumentList.Add("--start");
-		startInfo.ArgumentList.Add("--update");
-		Process.Start(startInfo);
-		Environment.Exit(0);
 	}
 
 	[MemberNotNull(nameof(RatEyeEngine))]
@@ -202,11 +170,13 @@ public class RatScannerMain : INotifyPropertyChanged {
 	/// <param name="position">Position on the screen at which to perform the scan</param>
 	internal void NameScan(Vector2 position) {
 		lock (NameScanLock) {
+			SetScanStatusKey("ScanStatusNameTriggered");
 			Logger.LogDebug("Name scanning at: " + position);
 			// Wait for game ui to update the click
 			Thread.Sleep(50);
 
 			// Get raw screenshot which includes the icon and text
+			SetScanStatusKey("ScanStatusNameCapture");
 			int markerScanSize = RatConfig.NameScan.MarkerScanSize;
 			int sizeWidth = markerScanSize + RatConfig.NameScan.TextWidth;
 			int sizeHeight = markerScanSize;
@@ -216,9 +186,18 @@ public class RatScannerMain : INotifyPropertyChanged {
 			Bitmap screenshot = GetScreenshot(position, new Size(sizeWidth, sizeHeight));
 
 			// Scan the item
+			SetScanStatusKey("ScanStatusNameRecognizing");
 			RatEye.Processing.Inspection inspection = RatEyeEngine.NewInspection(screenshot);
 
-			if (!inspection.ContainsMarker || inspection.Item == null) return;
+			if (!inspection.ContainsMarker) {
+				SetScanStatusKey("ScanStatusNameMarkerMissing", true);
+				return;
+			}
+
+			if (inspection.Item == null) {
+				SetScanStatusKey("ScanStatusNameNotRecognized", true);
+				return;
+			}
 
 			float scale = RatEyeEngine.Config.ProcessingConfig.Scale;
 			Bitmap marker = RatEyeEngine.Config.ProcessingConfig.InspectionConfig.Marker;
@@ -233,6 +212,7 @@ public class RatScannerMain : INotifyPropertyChanged {
 
 			ItemScans.Enqueue(tempNameScan);
 
+			SetScanStatusKey("ScanStatusNameMatched", true, tempNameScan.Item.Name);
 			RefreshOverlay();
 		}
 	}
@@ -242,6 +222,7 @@ public class RatScannerMain : INotifyPropertyChanged {
 	/// </summary>
 	internal void NameScanScreen(object? _ = null) {
 		lock (NameScanLock) {
+			SetScanStatusKey("ScanStatusAutoCapture");
 			Logger.LogDebug("Name scanning screen");
 			Vector2 mousePosition = UserActivityHelper.GetMousePosition();
 			Rectangle bounds = Screen.AllScreens.First(screen => screen.Bounds.Contains(mousePosition)).Bounds;
@@ -250,9 +231,13 @@ public class RatScannerMain : INotifyPropertyChanged {
 			Bitmap screenshot = GetScreenshot(position, bounds.Size);
 
 			// Scan the item
+			SetScanStatusKey("ScanStatusAutoFinding");
 			RatEye.Processing.MultiInspection multiInspection = RatEyeEngine.NewMultiInspection(screenshot);
 
-			if (multiInspection.Inspections.Count == 0) return;
+			if (multiInspection.Inspections.Count == 0) {
+				SetScanStatusKey("ScanStatusAutoNone", true);
+				return;
+			}
 
 			foreach (RatEye.Processing.Inspection? inspection in multiInspection.Inspections) {
 				float scale = RatEyeEngine.Config.ProcessingConfig.Scale;
@@ -268,6 +253,7 @@ public class RatScannerMain : INotifyPropertyChanged {
 
 				ItemScans.Enqueue(tempNameScan);
 			}
+			SetScanStatusKey("ScanStatusAutoComplete", true, multiInspection.Inspections.Count);
 			RefreshOverlay();
 		}
 	}
@@ -279,6 +265,7 @@ public class RatScannerMain : INotifyPropertyChanged {
 	/// <returns><see langword="true"/> if a item was scanned successfully</returns>
 	internal void IconScan(Vector2 position) {
 		lock (IconScanLock) {
+			SetScanStatusKey("ScanStatusIconTriggered");
 			Logger.LogDebug("Icon scanning at: " + position);
 			int x = position.X - RatConfig.IconScan.ScanWidth / 2;
 			int y = position.Y - RatConfig.IconScan.ScanHeight / 2;
@@ -288,10 +275,19 @@ public class RatScannerMain : INotifyPropertyChanged {
 			Bitmap screenshot = GetScreenshot(screenshotPosition, size);
 
 			// Scan the item
+			SetScanStatusKey("ScanStatusIconLocating");
 			RatEye.Processing.Inventory inventory = RatEyeEngine.NewInventory(screenshot);
 			RatEye.Processing.Icon? icon = inventory.LocateIcon();
 
-			if (icon?.DetectionConfidence <= 0 || icon?.Item == null) return;
+			if (icon?.DetectionConfidence <= 0) {
+				SetScanStatusKey("ScanStatusIconNoValidIcon", true);
+				return;
+			}
+
+			if (icon?.Item == null) {
+				SetScanStatusKey("ScanStatusIconNoMatch", true);
+				return;
+			}
 
 			Vector2 toolTipPosition = position;
 			toolTipPosition += icon.Position + icon.ItemPosition;
@@ -300,8 +296,50 @@ public class RatScannerMain : INotifyPropertyChanged {
 			ItemIconScan tempIconScan = new(icon, toolTipPosition, RatConfig.ToolTip.Duration);
 
 			ItemScans.Enqueue(tempIconScan);
+			SetScanStatusKey("ScanStatusIconMatched", true, tempIconScan.Item.Name);
 			RefreshOverlay();
 		}
+	}
+
+	internal void SetScanStatus(string status, bool clearSoon = false) {
+		long version = Interlocked.Increment(ref _scanStatusVersion);
+		_scanStatusKey = "";
+		_scanStatusArgs = Array.Empty<object>();
+		ScanStatusText = status;
+		OnPropertyChanged(nameof(ScanStatusText));
+
+		if (!clearSoon) return;
+		_scanStatusClearTimer?.Dispose();
+		_scanStatusClearTimer = new Timer(_ => ClearScanStatus(version), null, 3500, Timeout.Infinite);
+	}
+
+	internal void SetScanStatusKey(string key, bool clearSoon = false, params object[] args) {
+		long version = Interlocked.Increment(ref _scanStatusVersion);
+		_scanStatusKey = key;
+		_scanStatusArgs = args ?? Array.Empty<object>();
+		ScanStatusText = _localizationService.Format(key, _scanStatusArgs);
+		OnPropertyChanged(nameof(ScanStatusText));
+
+		if (!clearSoon) return;
+		_scanStatusClearTimer?.Dispose();
+		_scanStatusClearTimer = new Timer(_ => ClearScanStatus(version), null, 3500, Timeout.Infinite);
+	}
+
+	internal void RefreshScanStatusTranslation() {
+		if (string.IsNullOrWhiteSpace(_scanStatusKey)) {
+			OnPropertyChanged();
+			return;
+		}
+		ScanStatusText = _localizationService.Format(_scanStatusKey, _scanStatusArgs);
+		OnPropertyChanged(nameof(ScanStatusText));
+	}
+
+	private void ClearScanStatus(long version) {
+		if (Interlocked.Read(ref _scanStatusVersion) != version) return;
+		_scanStatusKey = "";
+		_scanStatusArgs = Array.Empty<object>();
+		ScanStatusText = "";
+		OnPropertyChanged(nameof(ScanStatusText));
 	}
 
 	// Returns the ruff screenshot

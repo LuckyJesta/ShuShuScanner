@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 
-namespace RatScanner;
+namespace ShuShuscanner;
 
 public enum UiLanguage {
 	English = 0,
@@ -48,9 +48,11 @@ public static class UiLanguageExtensions {
 
 public class LocalizationService {
 	private static Dictionary<string, string>? Translations;
+	private static Dictionary<string, string>? EnglishTranslations;
 
 	public void SetLanguage(UiLanguage language) {
 		try {
+			EnsureEnglishTranslations();
 			var filePath = Path.Combine(RatConfig.Paths.i18nDir, language.GetTranslationFileName());
 			if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) {
 				Logger.LogWarning($"Translation file not found: {filePath}");
@@ -71,7 +73,9 @@ public class LocalizationService {
 
 	public string Translate(string key) {
 		if (Translations == null) return key;
-		return Translations.TryGetValue(key, out var value) ? value : key;
+		if (Translations.TryGetValue(key, out var value)) return value;
+		EnsureEnglishTranslations();
+		return EnglishTranslations?.TryGetValue(key, out var fallback) == true ? fallback : key;
 	}
 
 	public string Format(string key, params object[] args) {
@@ -79,5 +83,17 @@ public class LocalizationService {
 		return args == null || args.Length == 0
 			? format
 			: string.Format(CultureInfo.CurrentCulture, format, args);
+	}
+
+	private static void EnsureEnglishTranslations() {
+		if (EnglishTranslations != null) return;
+		try {
+			var filePath = Path.Combine(RatConfig.Paths.i18nDir, UiLanguage.English.GetTranslationFileName());
+			if (!File.Exists(filePath)) return;
+			var json = File.ReadAllText(filePath);
+			EnglishTranslations = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+		} catch (Exception ex) {
+			Logger.LogWarning("Failed to load English translation fallback", ex);
+		}
 	}
 }

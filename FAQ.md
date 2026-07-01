@@ -1,7 +1,7 @@
-<img src="media/RatLogo.png" height=100 align=right>
+﻿<img src="media/ShuShuLogo.png" height=100 align=right>
 
 <div>
-  <a href="https://patreon.com/RatScanner">
+  <a href="https://patreon.com/ShuShuscanner">
     <img src="https://img.shields.io/badge/dynamic/json?color=%23e85b46&label=Patreon&query=data.attributes.patron_count&suffix=%20patrons&url=https%3A%2F%2Fwww.patreon.com%2Fapi%2Fcampaigns%2F4117180&style=for-the-badge&logo=patreon" />
   </a>
 
@@ -10,16 +10,16 @@
   </a>
 </div>
 
-# Rat Scanner FAQ
+# ShuShuscanner FAQ
 
 ## Table of Contents
 
 ### General
-- [Can I get banned for using Rat Scanner?](#can-i-get-banned-for-using-rat-scanner)
+- [Can I get banned for using ShuShuscanner?](#can-i-get-banned-for-using-rat-scanner)
 
 ### Program issues
-- [There is no RatScanner.exe file](#there-is-no-ratscannerexe-file)
-- [Rat Scanner is not starting](#rat-scanner-is-not-starting)
+- [There is no ShuShuscanner.exe file](#there-is-no-shushuscannerexe-file)
+- [ShuShuscanner is not starting](#rat-scanner-is-not-starting)
 - [Nothing happens when scanning](#nothing-happens-when-scanning)
 - [RatUpdater.exe could not be found! Please update manually.](#ratupdaterexe-could-not-be-found-please-update-manually)
 - [Unable to download updater, please update manually.](#unable-to-download-updater-please-update-manually)
@@ -39,8 +39,8 @@
 
 # General
 
-## Can I get banned for using Rat Scanner?
-While Battlestate Games does not support nor is affiliated with this project, it exists since two years with over 1.000 players using it every day in their games. So far there has not been a single instance in which RatScanner was proven to have caused any ban.
+## Can I get banned for using ShuShuscanner?
+While Battlestate Games does not support nor is affiliated with this project, it exists since two years with over 1.000 players using it every day in their games. So far there has not been a single instance in which ShuShuscanner was proven to have caused any ban.
 
 <br/>
 
@@ -50,15 +50,15 @@ While Battlestate Games does not support nor is affiliated with this project, it
 
 # Program issues
 
-## There is no RatScanner.exe file
+## There is no ShuShuscanner.exe file
 Make sure you downloaded and extracted the files as described inside the [download section][download-section]
 
-If you still cannot see `RatScanner.exe` it is most likely removed by your antivirus.
+If you still cannot see `ShuShuscanner.exe` it is most likely removed by your antivirus.
 In that case, create a exception for it or disable your antivirus.
 
-## Rat Scanner is not starting
-- Try starting `RatScanner.exe` as administrator
-- Make sure that there is no antivirus blocking RatScanner from accessing or downloading additional files
+## ShuShuscanner is not starting
+- Try starting `ShuShuscanner.exe` as administrator
+- Make sure that there is no antivirus blocking ShuShuscanner from accessing or downloading additional files
 
 If you still can't run the application, you are probably missing the WebView2 Runtime (which should usually come with Edge). 
 
@@ -66,23 +66,23 @@ If you still can't run the application, you are probably missing the WebView2 Ru
 
 ## Nothing happens when scanning
 - Check that you set your resolution correctly inside the settings
-- Try to run RatScanner as administrator
+- Try to run ShuShuscanner as administrator
 - Try to disable HDR
 
 ## RatUpdater.exe could not be found! Please update manually.
-Downloaded the latest version [here][ratscanner-latest].
+Downloaded the latest version [here][shushuscanner-latest].
 
 ## Unable to download updater, please update manually.
-Downloaded the latest version [here][ratscanner-latest].
+Downloaded the latest version [here][shushuscanner-latest].
 
 ## Could not find icon cache folder at: ...
 Please have a look at [the question below](#could-not-find-dynamic-correlation-data-at-).
 
 ## Could not find dynamic correlation data at: ...
-1. Close RatScanner
+1. Close ShuShuscanner
 2. Start Escape From Tarkov
 3. Go to Mechanics trading screen and wait for all icons to load (no spinning circles)
-4. Start RatScanner.exe
+4. Start ShuShuscanner.exe
 
 ## The type initializer for 'OpenCvSharp.NativeMethods' threw an exception.
 This probably means you are missing the Windows Media Features.
@@ -117,6 +117,6 @@ Also, when in the stash, the light bright in the top center of the screen interf
 
 [webview2-download]: https://go.microsoft.com/fwlink/p/?LinkId=2124703
 [net-download]: https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-6.0.100-windows-x64-installer
-[download-section]: https://github.com/Blightbuster/RatScanner#download
+[download-section]: https://github.com/Blightbuster/ShuShuscanner#download
 [windows-media-pack]: https://www.microsoft.com/en-us/software-download/mediafeaturepack
-[ratscanner-latest]: https://github.com/RatScanner/RatScanner/releases/latest/download/RatScanner.zip
+[shushuscanner-latest]: https://github.com/ShuShuscanner/ShuShuscanner/releases/latest/download/ShuShuscanner.zip

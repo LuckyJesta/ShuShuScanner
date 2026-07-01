@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace RatScanner;
+namespace ShuShuscanner;
 
 static class WindowBlurEffect {
 	[DllImport("user32.dll")]

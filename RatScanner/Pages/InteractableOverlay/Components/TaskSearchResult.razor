@@ -1,5 +1,5 @@
-@using RatScanner.TarkovDev.GraphQL
-@using TTask = RatScanner.TarkovDev.GraphQL.Task;
+﻿@using ShuShuscanner.TarkovDev.GraphQL
+@using TTask = ShuShuscanner.TarkovDev.GraphQL.Task;
 @using System.Diagnostics;
 
 <MudPaper Class="pa-2" Elevation="3" Style="">
@@ -16,8 +16,8 @@
                     @Task.Name
                 </MudText>
                 <MudText Align="Align.Center">
-                    <MudIconButton Icon="@Constants.Icon.TarkovDev" Size="Size.Small" OnClick=@(() => OpenURL($"https://tarkov.dev/task/{Task.Id}")) />
-                    <MudIconButton Icon="@Icons.Material.Filled.OpenInNew" Size="Size.Small" OnClick=@(() => OpenURL(Task.WikiLink)) />
+                    <MudIconButton Icon="@Constants.Icon.TarkovDev" Size="Size.Small" Title="打开 Tarkov.dev" OnClick=@(() => OpenURL($"https://tarkov.dev/task/{Task.Id}")) />
+                    <MudIconButton Icon="@Icons.Material.Filled.OpenInNew" Size="Size.Small" Title="打开百科" OnClick=@(() => OpenURL(Task.WikiLink)) />
                 </MudText>
             </MudStack>
         </MudStack>
@@ -47,7 +47,7 @@
                         <MudIconButton Icon="@Icons.Material.Filled.Map" 
                                       Size="Size.Small" 
                                       Color="Color.Primary"
-                                      Title="View on map"
+                                      Title="鍦ㄥ湴鍥句笂鏌ョ湅"
                                       OnClick="@(() => OnMapClick.InvokeAsync((Task, objective)))" />
                     }
                 </MudStack>

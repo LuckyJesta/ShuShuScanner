@@ -3,7 +3,7 @@ using RatEye.Processing;
 using System;
 using System.Linq;
 
-namespace RatScanner.Scan;
+namespace ShuShuscanner.Scan;
 
 public class ItemNameScan : ItemScan {
 	private Vector2 _toolTipPosition;

@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
 
-namespace RatScanner.View;
+namespace ShuShuscanner.View;
 
 /// <summary>
 /// Interaction logic for BlazorOverlay.xaml

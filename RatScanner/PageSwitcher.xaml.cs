@@ -1,4 +1,4 @@
-﻿using RatScanner.View;
+﻿using ShuShuscanner.View;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
@@ -8,7 +8,7 @@ using System.Windows.Shell;
 using ContextMenuStrip = System.Windows.Forms.ContextMenuStrip;
 using NotifyIcon = System.Windows.Forms.NotifyIcon;
 
-namespace RatScanner;
+namespace ShuShuscanner;
 
 /// <summary>
 /// Interaction logic for PageSwitcher.xaml
@@ -19,6 +19,7 @@ public partial class PageSwitcher : Window {
 
 	private NotifyIcon _notifyIcon = null!;
 	private ContextMenuStrip _contextMenuStrip = new();
+	private readonly LocalizationService _localizationService = new();
 
 	private static PageSwitcher _instance = null!;
 	public static PageSwitcher Instance => _instance ??= new PageSwitcher();
@@ -31,6 +32,7 @@ public partial class PageSwitcher : Window {
 			RatConfig.LoadConfig();
 
 			InitializeComponent();
+			RefreshWindowTitleLanguage();
 			ResetWindowSize();
 			Navigate(BlazorUI.Instance);
 			AddJumpList();
@@ -93,26 +95,26 @@ public partial class PageSwitcher : Window {
 
 	private void AddJumpList() {
 		JumpTask showUITask = new() {
-			Title = "Show UI",
+			Title = _localizationService["TrayShowMainUI"],
 			Arguments = "/showUI",
-			Description = "Opens the main interface of RatScanner",
+			Description = _localizationService["TrayShowMainUIDescription"],
 			IconResourcePath = Environment.ProcessPath,
 			ApplicationPath = Environment.ProcessPath,
 
 		};
 
 		JumpTask showMinimalUITask = new() {
-			Title = "Show Minimal UI",
+			Title = _localizationService["TrayShowMinimalUI"],
 			Arguments = "/showMinimalUI",
-			Description = "Opens the minimal interface of RatScanner",
+			Description = _localizationService["TrayShowMinimalUIDescription"],
 			IconResourcePath = Environment.ProcessPath,
 			ApplicationPath = Environment.ProcessPath,
 		};
 
 		JumpTask showOverlayTask = new() {
-			Title = "Show Overlay",
+			Title = _localizationService["TrayShowOverlay"],
 			Arguments = "/showOverlay",
-			Description = "Opens the interactive overlay of RatScanner",
+			Description = _localizationService["TrayShowOverlayDescription"],
 			IconResourcePath = Environment.ProcessPath,
 			ApplicationPath = Environment.ProcessPath,
 		};
@@ -130,17 +132,12 @@ public partial class PageSwitcher : Window {
 	[MemberNotNull(nameof(_notifyIcon))]
 	private void AddTrayIcon() {
 		_notifyIcon = new NotifyIcon {
-			Text = "Show",
 			Visible = true,
-			Icon = Properties.Resources.RatLogoSmall,
+			Icon = Properties.Resources.ShuShuLogoSmall,
 		};
 
-		_contextMenuStrip.Items.Add("Show UI", null, OnContextMenuShowUI);
-		_contextMenuStrip.Items.Add("Show Minimal UI", null, OnContextMenuShowMinimalUI);
-		_contextMenuStrip.Items.Add("Show Overlay", null, OnContextMenuShowOverlay);
-		_contextMenuStrip.Items.Add("Exit", null, OnContextMenuExitApplication);
-
 		_notifyIcon.ContextMenuStrip = _contextMenuStrip;
+		RefreshTrayLanguage();
 
 		_notifyIcon.MouseClick += (sender, e) => {
 			if (e.Button == System.Windows.Forms.MouseButtons.Left) {
@@ -148,6 +145,25 @@ public partial class PageSwitcher : Window {
 				WindowState = WindowState.Normal;
 			}
 		};
+	}
+
+	internal void RefreshWindowTitleLanguage() {
+		string title = _localizationService["AppTitle"];
+		Title = title;
+		TitleTextBlock.Text = title;
+	}
+
+	internal void RefreshTrayLanguage() {
+		if (_notifyIcon == null) return;
+
+		RefreshWindowTitleLanguage();
+		_notifyIcon.Text = _localizationService["TrayShow"];
+		_contextMenuStrip.Items.Clear();
+		_contextMenuStrip.Items.Add(_localizationService["TrayShowMainUI"], null, OnContextMenuShowUI);
+		_contextMenuStrip.Items.Add(_localizationService["TrayShowMinimalUI"], null, OnContextMenuShowMinimalUI);
+		_contextMenuStrip.Items.Add(_localizationService["TrayShowOverlay"], null, OnContextMenuShowOverlay);
+		_contextMenuStrip.Items.Add(_localizationService["TrayExit"], null, OnContextMenuExitApplication);
+		AddJumpList();
 	}
 
 	private void OnContextMenuShowOverlay(object? sender, EventArgs e) => ShowOverlay();
