@@ -302,6 +302,11 @@ public class ShuShuscannerMain : INotifyPropertyChanged {
 	}
 
 	internal void SetScanStatus(string status, bool clearSoon = false) {
+		if (!RatConfig.UserInterface.ShowScanStatus) {
+			ClearScanStatus();
+			return;
+		}
+
 		long version = Interlocked.Increment(ref _scanStatusVersion);
 		_scanStatusKey = "";
 		_scanStatusArgs = Array.Empty<object>();
@@ -314,6 +319,11 @@ public class ShuShuscannerMain : INotifyPropertyChanged {
 	}
 
 	internal void SetScanStatusKey(string key, bool clearSoon = false, params object[] args) {
+		if (!RatConfig.UserInterface.ShowScanStatus) {
+			ClearScanStatus();
+			return;
+		}
+
 		long version = Interlocked.Increment(ref _scanStatusVersion);
 		_scanStatusKey = key;
 		_scanStatusArgs = args ?? Array.Empty<object>();
@@ -326,6 +336,11 @@ public class ShuShuscannerMain : INotifyPropertyChanged {
 	}
 
 	internal void RefreshScanStatusTranslation() {
+		if (!RatConfig.UserInterface.ShowScanStatus) {
+			ClearScanStatus();
+			return;
+		}
+
 		if (string.IsNullOrWhiteSpace(_scanStatusKey)) {
 			OnPropertyChanged();
 			return;
@@ -334,12 +349,19 @@ public class ShuShuscannerMain : INotifyPropertyChanged {
 		OnPropertyChanged(nameof(ScanStatusText));
 	}
 
-	private void ClearScanStatus(long version) {
-		if (Interlocked.Read(ref _scanStatusVersion) != version) return;
+	internal void ClearScanStatus() {
+		Interlocked.Increment(ref _scanStatusVersion);
+		_scanStatusClearTimer?.Dispose();
+		_scanStatusClearTimer = null;
 		_scanStatusKey = "";
 		_scanStatusArgs = Array.Empty<object>();
 		ScanStatusText = "";
 		OnPropertyChanged(nameof(ScanStatusText));
+	}
+
+	private void ClearScanStatus(long version) {
+		if (Interlocked.Read(ref _scanStatusVersion) != version) return;
+		ClearScanStatus();
 	}
 
 	// Returns the ruff screenshot

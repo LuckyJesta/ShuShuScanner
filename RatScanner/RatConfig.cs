@@ -82,6 +82,7 @@ internal static class RatConfig {
 	// UI options
 	internal static class UserInterface {
 		internal static UiLanguage Language = UiLanguage.Chinese;
+		internal static bool ShowScanStatus = false;
 	}
 
 	// Minimal UI
@@ -203,6 +204,7 @@ internal static class RatConfig {
 
 		config.Section = nameof(UserInterface);
 		UserInterface.Language = (UiLanguage)config.ReadInt(nameof(UserInterface.Language), (int)UserInterface.Language);
+		UserInterface.ShowScanStatus = config.ReadBool(nameof(UserInterface.ShowScanStatus), UserInterface.ShowScanStatus);
 
 		config.Section = nameof(MinimalUi);
 		MinimalUi.ShowName = config.ReadBool(nameof(MinimalUi.ShowName), MinimalUi.ShowName);
@@ -269,6 +271,7 @@ internal static class RatConfig {
 
 		config.Section = nameof(UserInterface);
 		config.WriteInt(nameof(UserInterface.Language), (int)UserInterface.Language);
+		config.WriteBool(nameof(UserInterface.ShowScanStatus), UserInterface.ShowScanStatus);
 
 		config.Section = nameof(MinimalUi);
 		config.WriteBool(nameof(MinimalUi.ShowName), MinimalUi.ShowName);

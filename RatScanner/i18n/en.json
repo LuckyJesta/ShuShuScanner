@@ -21,6 +21,7 @@
   "InterfaceLanguage": "Interface Language",
   "ScanningSettingsTitle": "Scanning Settings",
   "NameScanLanguage": "Name Scan Language",
+  "ShowScanStatus": "Show status info",
   "EnableNameScan": "Enable Name Scan",
   "AutomaticScanning": "Automatic Scanning",
   "NameScanHotkey": "Name Scan Hotkey",

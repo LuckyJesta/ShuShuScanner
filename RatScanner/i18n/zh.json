@@ -21,6 +21,7 @@
   "InterfaceLanguage": "界面语言",
   "ScanningSettingsTitle": "扫描设置",
   "NameScanLanguage": "名称扫描语言",
+  "ShowScanStatus": "显示状态信息",
   "EnableNameScan": "启用名称扫描",
   "AutomaticScanning": "自动扫描",
   "NameScanHotkey": "名称扫描快捷键",

@@ -20,6 +20,7 @@ internal class SettingsVM : INotifyPropertyChanged {
 	public string ToolTipDuration { get; set; }
 	public int ToolTipMilli { get; set; }
 	public UiLanguage UiLanguage { get; set; }
+	public bool ShowScanStatus { get; set; }
 
 	public bool ShowName { get; set; }
 	public bool ShowAvgDayPrice { get; set; }
@@ -77,6 +78,7 @@ internal class SettingsVM : INotifyPropertyChanged {
 		ToolTipDuration = RatConfig.ToolTip.Duration.ToString();
 		ToolTipMilli = RatConfig.ToolTip.Duration;
 		UiLanguage = RatConfig.UserInterface.Language;
+		ShowScanStatus = RatConfig.UserInterface.ShowScanStatus;
 
 		ShowName = RatConfig.MinimalUi.ShowName;
 		ShowAvgDayPrice = RatConfig.MinimalUi.ShowAvgDayPrice;
@@ -133,6 +135,7 @@ internal class SettingsVM : INotifyPropertyChanged {
 		RatConfig.ToolTip.Duration = int.TryParse(ToolTipDuration, out int i) ? i : 0;
 		RatConfig.ToolTip.Duration = ToolTipMilli;
 		RatConfig.UserInterface.Language = UiLanguage;
+		RatConfig.UserInterface.ShowScanStatus = ShowScanStatus;
 
 		RatConfig.MinimalUi.ShowName = ShowName;
 		RatConfig.MinimalUi.ShowAvgDayPrice = ShowAvgDayPrice;
@@ -172,6 +175,7 @@ internal class SettingsVM : INotifyPropertyChanged {
 			PageSwitcher.Instance.RefreshTrayLanguage();
 			ShuShuscannerMain.Instance.RefreshScanStatusTranslation();
 		}
+		if (!RatConfig.UserInterface.ShowScanStatus) ShuShuscannerMain.Instance.ClearScanStatus();
 		if (updateResolution && !updateRatEyeData) ShuShuscannerMain.Instance.SetupRatEye();
 		if (updateRatEyeData) _ = RefreshTarkovDevCacheAndRatEyeAsync();
 

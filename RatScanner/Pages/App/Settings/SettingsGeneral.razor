@@ -50,6 +50,7 @@
                 <MudStack Spacing="0" Class="pa-0 ma-0">
                     <MudCheckBox @bind-Checked="@SettingsVM.GameMode" Label="@Localizer["UsePveData"]" Dense="true" Size="Size.Small" Class="pa-0 ma-0" Converter="@gameModeConverter"></MudCheckBox>
                     <!--<MudCheckBox @bind-Checked="@SettingsVM.MinimizeToTray" Label="Minimize to tray" Dense="true" Size="Size.Small" Class="pa-0 ma-0"></MudCheckBox>-->
+                    <MudCheckBox @bind-Checked="@SettingsVM.ShowScanStatus" Label="@Localizer["ShowScanStatus"]" Dense="true" Size="Size.Small" Class="pa-0 ma-0"></MudCheckBox>
                     <MudCheckBox @bind-Checked="@SettingsVM.AlwaysOnTop" Label="@Localizer["AlwaysOnTop"]" Dense="true" Size="Size.Small" Class="pa-0 ma-0"></MudCheckBox>
                     <MudCheckBox @bind-Checked="@SettingsVM.LogDebug" Label="@Localizer["LogDebugInfo"]" Dense="true" Size="Size.Small" Class="pa-0 ma-0"></MudCheckBox>
                 </MudStack>

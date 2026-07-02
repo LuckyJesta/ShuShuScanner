@@ -2,9 +2,11 @@
 
 # ShuShuscanner
 
+[![中文说明](https://img.shields.io/badge/README-%E4%B8%AD%E6%96%87-blue)](README.zh-CN.md)
+
 ShuShuscanner is an unofficial personal fork of [RatScanner/RatScanner][upstream-ratscanner], an external item scanner for [Escape from Tarkov][escape-from-tarkov].
 
-This fork focuses on Chinese localization, UI adjustments, removal of the original RatScanner backend dependency, and personal branch maintenance.
+This fork focuses on Chinese localization, UI adjustments, custom branding, and personal branch maintenance.
 
 It is not affiliated with, endorsed by, or maintained by the original RatScanner authors. Original copyright and license notices are preserved according to the project license.
 
@@ -21,12 +23,13 @@ Battlestate Games is not affiliated with this project. Use this fork at your own
 ## What Changed in This Fork
 
 - Renamed the application to ShuShuscanner
-- Chinese UI localization, with Chinese brand name “鼠鼠小账本”
+- Chinese UI localization, with Chinese name “鼠鼠小账本”
 - Removed calls to the original RatScanner API backend
 - Updated logo and application icon
 - Adjusted settings layout and scan status display
 - Added separate configurable scan hotkeys
 - Improved PvE data refresh behavior
+- Added a general setting for status information display, disabled by default
 
 <br/>
 
@@ -96,6 +99,8 @@ Background opacity as well as the data which is shown can be configured in the s
 
 1. Clone the repository
 2. Copy the `Data` folder from the latest release to `ShuShuscanner\Data\`
+
+The application version is currently `1.0.2`.
 
 ### Compiling
 
