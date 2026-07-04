@@ -140,6 +140,9 @@ public class ShuShuscannerMain : INotifyPropertyChanged {
 			ProcessingConfig = new Config.Processing() {
 				Scale = Config.Processing.Resolution2Scale(RatConfig.ScreenWidth, RatConfig.ScreenHeight),
 				Language = RatConfig.NameScan.Language,
+				InspectionConfig = new Config.Processing.Inspection() {
+					MarkerThreshold = 0.65f,
+				},
 				IconConfig = new Config.Processing.Icon() {
 					UseStaticIcons = true,
 					ScanMode = Config.Processing.Icon.ScanModes.TemplateMatching,
@@ -172,6 +175,7 @@ public class ShuShuscannerMain : INotifyPropertyChanged {
 		lock (NameScanLock) {
 			SetScanStatusKey("ScanStatusNameTriggered");
 			Logger.LogDebug("Name scanning at: " + position);
+			Vector2 clickPosition = position;
 			// Wait for game ui to update the click
 			Thread.Sleep(50);
 
@@ -190,8 +194,19 @@ public class ShuShuscannerMain : INotifyPropertyChanged {
 			RatEye.Processing.Inspection inspection = RatEyeEngine.NewInspection(screenshot);
 
 			if (!inspection.ContainsMarker) {
-				SetScanStatusKey("ScanStatusNameMarkerMissing", true);
-				return;
+				Logger.LogDebug($"Name scan marker not found in initial area. Confidence: {inspection.MarkerConfidence}");
+				int fallbackWidth = sizeWidth + (int)(120 * RatConfig.GameScale);
+				int fallbackHeight = Math.Max(markerScanSize, (int)(140 * RatConfig.GameScale));
+				position = clickPosition - new Vector2((int)(80 * RatConfig.GameScale), fallbackHeight / 2);
+				screenshot = GetScreenshot(position, new Size(fallbackWidth, fallbackHeight));
+				inspection = RatEyeEngine.NewInspection(screenshot);
+
+				if (!inspection.ContainsMarker) {
+					Logger.LogWarning($"Name scan marker not found. Confidence: {inspection.MarkerConfidence}");
+					Logger.LogDebugBitmap(screenshot, "name_scan_marker_missing");
+					SetScanStatusKey("ScanStatusNameMarkerMissing", true);
+					return;
+				}
 			}
 
 			if (inspection.Item == null) {
@@ -205,10 +220,17 @@ public class ShuShuscannerMain : INotifyPropertyChanged {
 			toolTipPosition += new Vector2(-(int)(marker.Width * scale), (int)(marker.Height * scale));
 			toolTipPosition += position;
 
+			TarkovDev.GraphQL.Item? matchedItem = TarkovDevAPI.FindItemById(inspection.Item.Id);
+			if (matchedItem == null) {
+				SetScanStatusKey("ScanStatusNameNotRecognized", true);
+				return;
+			}
+
 			ItemNameScan tempNameScan = new(
 				inspection,
 				toolTipPosition,
-				RatConfig.ToolTip.Duration);
+				RatConfig.ToolTip.Duration,
+				matchedItem);
 
 			ItemScans.Enqueue(tempNameScan);
 
@@ -239,7 +261,12 @@ public class ShuShuscannerMain : INotifyPropertyChanged {
 				return;
 			}
 
+			int matchedCount = 0;
 			foreach (RatEye.Processing.Inspection? inspection in multiInspection.Inspections) {
+				if (inspection.Item == null) continue;
+				TarkovDev.GraphQL.Item? matchedItem = TarkovDevAPI.FindItemById(inspection.Item.Id);
+				if (matchedItem == null) continue;
+
 				float scale = RatEyeEngine.Config.ProcessingConfig.Scale;
 				Vector2 toolTipPosition = inspection.MarkerPosition;
 				toolTipPosition += position;
@@ -249,11 +276,13 @@ public class ShuShuscannerMain : INotifyPropertyChanged {
 				ItemNameScan tempNameScan = new(
 						inspection,
 						toolTipPosition,
-						RatConfig.ToolTip.Duration);
+						RatConfig.ToolTip.Duration,
+						matchedItem);
 
 				ItemScans.Enqueue(tempNameScan);
+				matchedCount++;
 			}
-			SetScanStatusKey("ScanStatusAutoComplete", true, multiInspection.Inspections.Count);
+			SetScanStatusKey("ScanStatusAutoComplete", true, matchedCount);
 			RefreshOverlay();
 		}
 	}
@@ -293,7 +322,13 @@ public class ShuShuscannerMain : INotifyPropertyChanged {
 			toolTipPosition += icon.Position + icon.ItemPosition;
 			toolTipPosition -= new Vector2(RatConfig.IconScan.ScanWidth, RatConfig.IconScan.ScanHeight) / 2;
 
-			ItemIconScan tempIconScan = new(icon, toolTipPosition, RatConfig.ToolTip.Duration);
+			TarkovDev.GraphQL.Item? matchedItem = TarkovDevAPI.FindItemById(icon.Item.Id);
+			if (matchedItem == null) {
+				SetScanStatusKey("ScanStatusIconNoMatch", true);
+				return;
+			}
+
+			ItemIconScan tempIconScan = new(icon, toolTipPosition, RatConfig.ToolTip.Duration, matchedItem);
 
 			ItemScans.Enqueue(tempIconScan);
 			SetScanStatusKey("ScanStatusIconMatched", true, tempIconScan.Item.Name);

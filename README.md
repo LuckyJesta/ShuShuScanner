@@ -24,12 +24,15 @@ Battlestate Games is not affiliated with this project. Use this fork at your own
 
 - Renamed the application to ShuShuscanner
 - Chinese UI localization, with Chinese name “鼠鼠小账本”
-- Removed calls to the original RatScanner API backend
 - Updated logo and application icon
 - Adjusted settings layout and scan status display
 - Added separate configurable scan hotkeys
 - Improved PvE data refresh behavior
 - Added a general setting for status information display, disabled by default
+- Default language options now start in English
+- Debug logging and debug screenshots are disabled by default
+- Refreshed item data when a scanned item id is missing from the local cache
+- Relaxed name-scan marker detection for current game UI scaling
 
 <br/>
 
@@ -100,7 +103,7 @@ Background opacity as well as the data which is shown can be configured in the s
 1. Clone the repository
 2. Copy the `Data` folder from the latest release to `ShuShuscanner\Data\`
 
-The application version is currently `1.0.2`.
+The application version is currently `1.0.3`.
 
 ### Compiling
 

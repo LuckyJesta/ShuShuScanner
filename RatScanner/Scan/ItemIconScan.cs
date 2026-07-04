@@ -1,8 +1,8 @@
-﻿using RatEye;
+using RatEye;
 using RatStash;
 using System;
-using System.Linq;
 using Icon = RatEye.Processing.Icon;
+using TarkovItem = ShuShuscanner.TarkovDev.GraphQL.Item;
 
 namespace ShuShuscanner.Scan;
 
@@ -13,10 +13,9 @@ public class ItemIconScan : ItemScan {
 
 	private Vector2 _toolTipPosition;
 
-	public ItemIconScan(Icon icon, Vector2 toolTipPosition, int duration) {
+	public ItemIconScan(Icon icon, Vector2 toolTipPosition, int duration, TarkovItem item) {
 		Icon = icon;
-		RatStash.Item iconItem = icon.Item;
-		Item = TarkovDevAPI.GetItems().FirstOrDefault(item => item.Id == iconItem.Id) ?? throw new Exception($"Unknown item: {icon.Item.Id}");
+		Item = item;
 		ItemExtraInfo = icon.ItemExtraInfo;
 		Confidence = icon.DetectionConfidence;
 		Rotated = icon.Rotated;

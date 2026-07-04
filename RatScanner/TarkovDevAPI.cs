@@ -246,6 +246,19 @@ public static class TarkovDevAPI {
 	public static Item[] GetItems(LanguageCode language, GameMode gameMode) => GetCachedPaginated<Item>(ItemsQueryKey(language, gameMode), (limit, offset) => ItemsQueryPaginated(limit, offset, language, gameMode), RatConfig.MediumTTL);
 	public static Item[] GetItems() => GetCachedPaginated<Item>(ItemsQueryKey(), ItemsQueryPaginated, RatConfig.MediumTTL);
 
+	public static Item? FindItemById(string id) {
+		string queryKey = ItemsQueryKey();
+		Item? item = GetItems().FirstOrDefault(item => item.Id == id);
+		if (item != null) return item;
+
+		Logger.LogWarning($"Item id \"{id}\" was not found in cache \"{queryKey}\". Refreshing item cache and retrying.");
+		Task.Run(() => QueuePaginatedRequest<Item>(queryKey, ItemsQueryPaginated, RatConfig.MediumTTL)).Wait();
+
+		item = GetItems().FirstOrDefault(item => item.Id == id);
+		if (item == null) Logger.LogWarning($"Item id \"{id}\" is still unknown after refreshing cache \"{queryKey}\".");
+		return item;
+	}
+
 	public static TTask[] GetTasks(LanguageCode language, GameMode gameMode) => GetCachedPaginated<TTask>(TasksQueryKey(language, gameMode), (limit, offset) => TasksQueryPaginated(limit, offset, language, gameMode), RatConfig.LongTTL);
 	public static TTask[] GetTasks() => GetCachedPaginated<TTask>(TasksQueryKey(), TasksQueryPaginated, RatConfig.LongTTL);
 

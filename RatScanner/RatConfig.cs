@@ -81,7 +81,7 @@ internal static class RatConfig {
 
 	// UI options
 	internal static class UserInterface {
-		internal static UiLanguage Language = UiLanguage.Chinese;
+		internal static UiLanguage Language = UiLanguage.English;
 		internal static bool ShowScanStatus = false;
 	}
 
@@ -132,14 +132,7 @@ internal static class RatConfig {
 	}
 
 	// Other
-#if DEBUG
-	internal static bool LogDebug {
-		get => true;
-		set { }
-	}
-#else
 	internal static bool LogDebug = false;
-#endif
 	internal static GameMode GameMode = GameMode.Regular;
 	internal static bool MinimizeToTray = false;
 	internal static bool AlwaysOnTop = true;
