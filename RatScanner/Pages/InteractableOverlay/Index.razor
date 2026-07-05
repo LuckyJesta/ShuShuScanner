@@ -76,15 +76,22 @@
     private List<TaskZone?>? _selectedObjectiveZones = null;
 
     private async void ExecuteSearch(string value) {
-        var sanitizedValue = _searchService.SanitizeSearch(value);
-        var results = Enumerable.Empty<SearchResult>();
-        results = results.Concat(await _searchService.SearchItemsAsync(sanitizedValue));
-        results = results.Concat(await _searchService.SearchTasksAsync(sanitizedValue));
-        // TODO: Re-enable map search when MapViewer is fixed
-        // results = results.Concat(await _searchService.SearchMapsAsync(sanitizedValue));
-        results = results.Where(result => result != null && result.Data != null);
-        results = results.OrderBy(result => result.Score).Take(4);
-        _searchResults = results;
+        try {
+            var sanitizedValue = _searchService.SanitizeSearch(value);
+            var results = Enumerable.Empty<SearchResult>();
+            results = results.Concat(await _searchService.SearchItemsAsync(sanitizedValue));
+            results = results.Concat(await _searchService.SearchTasksAsync(sanitizedValue));
+            // TODO: Re-enable map search when MapViewer is fixed
+            // results = results.Concat(await _searchService.SearchMapsAsync(sanitizedValue));
+            results = results.Where(result => result != null && result.Data != null);
+            results = results.OrderBy(result => result.Score).Take(4);
+            _searchResults = results;
+        } catch (Exception e) {
+            Logger.LogWarning("Interactable overlay search failed.", e);
+            _searchResults = Enumerable.Empty<SearchResult>();
+        }
+
+        await InvokeAsync(StateHasChanged);
     }
 
     private void OpenMapForObjective(TTask task, ITaskObjective objective) {
